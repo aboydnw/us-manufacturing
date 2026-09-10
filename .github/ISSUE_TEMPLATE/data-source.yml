@@ -1,0 +1,71 @@
+name: Suggest a data source
+description: Help fill a documented gap in the U.S. solar supply-chain evidence.
+title: "Data source: "
+labels:
+  - data-source
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve this open investigation. We review sources for scope, methodology, and reuse rights before adding them to the publication.
+  - type: input
+    id: source-url
+    attributes:
+      label: Source URL
+      description: Link directly to the dataset or its official landing page.
+      placeholder: https://example.gov/data
+    validations:
+      required: true
+  - type: input
+    id: publisher
+    attributes:
+      label: Publisher
+      placeholder: U.S. Department of Example
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License or reuse terms
+      description: Link or quote the specific license name. “Publicly available” is not a license.
+      placeholder: CC BY 4.0 — https://creativecommons.org/licenses/by/4.0/
+    validations:
+      required: true
+  - type: dropdown
+    id: stage
+    attributes:
+      label: Relevant value-chain stage
+      options:
+        - Raw materials
+        - Silicon metal and polysilicon
+        - Ingots and wafers
+        - Solar cells
+        - Module materials and assembly
+        - Trackers and racking
+        - Inverters and controls
+        - Electrical balance of system
+        - Installed U.S. project
+        - CdTe comparison
+    validations:
+      required: true
+  - type: textarea
+    id: measure
+    attributes:
+      label: What does the source measure?
+      description: Include geography, observation period, units, and whether it reports capacity, output, trade, or a model.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: Which gap does it fill?
+      description: Explain which unknown or current limitation this evidence improves.
+    validations:
+      required: true
+  - type: textarea
+    id: caveats
+    attributes:
+      label: Known limitations
+      description: Note confidentiality, broad classifications, modeled assumptions, or other cautions.
+    validations:
+      required: false
