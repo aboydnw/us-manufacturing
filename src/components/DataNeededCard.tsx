@@ -12,7 +12,8 @@ export function DataNeededCard({ question }: { question: Question }) {
       <h3>We need data for this. Do you know of any?</h3>
       <p className="data-needed-card__measure">{question.missingMeasure}</p>
       <p>
-        A useful source would identify {question.usefulSourceWouldInclude.join(", ")}.
+        A useful source would identify{" "}
+        {question.usefulSourceWouldInclude.join(", ")}.
       </p>
       <a
         className="data-needed-card__link"

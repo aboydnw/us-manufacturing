@@ -2,7 +2,11 @@ import type { ResolvedObservation } from "../data/schema";
 import { EvidenceBadge } from "./EvidenceBadge";
 import { SourceDetails } from "./SourceDetails";
 
-export function EvidenceCard({ observation }: { observation: ResolvedObservation }) {
+export function EvidenceCard({
+  observation,
+}: {
+  observation: ResolvedObservation;
+}) {
   return (
     <article className="evidence-card">
       <div className="evidence-card__topline">

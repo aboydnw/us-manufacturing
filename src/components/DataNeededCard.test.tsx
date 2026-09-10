@@ -16,8 +16,7 @@ it("asks for data without presenting an unknown as zero", () => {
   expect(screen.getByText(/we need data for this/i)).toBeVisible();
   expect(screen.getByText(question.missingMeasure)).toBeVisible();
   expect(screen.queryByText(/^0$/)).not.toBeInTheDocument();
-  expect(screen.getByRole("link", { name: /suggest a source/i })).toHaveAttribute(
-    "href",
-    expect.stringContaining("github.com"),
-  );
+  expect(
+    screen.getByRole("link", { name: /suggest a source/i }),
+  ).toHaveAttribute("href", expect.stringContaining("github.com"));
 });

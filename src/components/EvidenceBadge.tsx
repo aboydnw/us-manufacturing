@@ -10,7 +10,10 @@ const labels: Record<EvidenceType, string> = {
 
 export function EvidenceBadge({ type }: { type: EvidenceType }) {
   return (
-    <span className={`evidence-badge evidence-badge--${type}`} data-evidence={type}>
+    <span
+      className={`evidence-badge evidence-badge--${type}`}
+      data-evidence={type}
+    >
       {labels[type]}
     </span>
   );

@@ -27,7 +27,9 @@ const stages: Stage[] = [
 
 it("keeps crystalline silicon and CdTe stages distinct", () => {
   render(<SupplyChainSpine stages={stages} />);
-  expect(screen.getByRole("navigation", { name: /supply chain/i })).toBeVisible();
+  expect(
+    screen.getByRole("navigation", { name: /supply chain/i }),
+  ).toBeVisible();
   expect(screen.getByText("Crystalline silicon")).toBeVisible();
   expect(screen.getByText("CdTe comparison")).toBeVisible();
 });

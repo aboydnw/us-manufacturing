@@ -1,32 +1,394 @@
 [
-  { "id": "demand-denominator", "stageId": "installed", "title": "a consistent annual U.S. demand denominator", "missingMeasure": "Completed annual installations across utility and small-scale segments", "usefulSourceWouldInclude": ["calendar year", "GWdc", "segment", "method", "license"], "issueLabel": "data-source" },
-  { "id": "dc-ac-method", "stageId": "installed", "title": "a standard DC-to-AC equipment comparison", "missingMeasure": "Documented conversion between GWdc demand and GWac equipment", "usefulSourceWouldInclude": ["technology", "DC/AC ratio", "year", "method"], "issueLabel": "data-source" },
-  { "id": "domestic-definition", "stageId": "installed", "title": "a physical definition of domestic content", "missingMeasure": "Stage-specific origin rules that do not collapse assembly and inputs", "usefulSourceWouldInclude": ["definition", "stage", "origin rule", "method"], "issueLabel": "data-source" },
-  { "id": "capacity-adjustments", "stageId": "installed", "title": "factory ramp, yield, and utilization adjustments", "missingMeasure": "Observed conversion from nameplate to available output", "usefulSourceWouldInclude": ["facility", "period", "nameplate", "output", "yield"], "issueLabel": "data-source" },
-  { "id": "solar-quartz", "stageId": "raw-materials", "title": "U.S. solar-grade quartz supply", "missingMeasure": "Production suitable for solar polysilicon", "usefulSourceWouldInclude": ["mine", "grade", "tonnes", "customers", "license"], "issueLabel": "data-source" },
-  { "id": "silicon-output", "stageId": "silicon", "title": "actual U.S. silicon and polysilicon output", "missingMeasure": "Annual output and utilization", "usefulSourceWouldInclude": ["facility", "period", "tonnes", "utilization", "license"], "issueLabel": "data-source" },
-  { "id": "polysilicon-allocation", "stageId": "silicon", "title": "domestic polysilicon allocated to solar", "missingMeasure": "Share sold to PV rather than semiconductors or exports", "usefulSourceWouldInclude": ["producer", "period", "product grade", "destination"], "issueLabel": "data-source" },
-  { "id": "wafer-consumables", "stageId": "wafers", "title": "origins of wafer-production consumables", "missingMeasure": "Supply of crucibles, diamond wire, and purification chemicals", "usefulSourceWouldInclude": ["component", "supplier", "factory country", "volume"], "issueLabel": "data-source" },
-  { "id": "wafer-output", "stageId": "wafers", "title": "actual U.S. wafer output and utilization", "missingMeasure": "Annual factory throughput, yield, and technology", "usefulSourceWouldInclude": ["facility", "period", "GWdc", "yield", "technology"], "issueLabel": "data-source" },
-  { "id": "embedded-wafer-origin", "stageId": "cells", "title": "wafer origins embedded in imported cells", "missingMeasure": "Upstream wafer and polysilicon origin by cell source country", "usefulSourceWouldInclude": ["cell factory", "wafer supplier", "polysilicon supplier", "period"], "issueLabel": "data-source" },
-  { "id": "domestic-cell-use", "stageId": "modules", "title": "domestic cells used in U.S.-assembled modules", "missingMeasure": "Share of module output using U.S.-made cells", "usefulSourceWouldInclude": ["module factory", "cell factory", "period", "GWdc"], "issueLabel": "data-source" },
-  { "id": "project-module-procurement", "stageId": "modules", "title": "module models purchased by U.S. projects", "missingMeasure": "Project-to-model and manufacturing-batch linkage", "usefulSourceWouldInclude": ["project", "module model", "factory", "delivery year"], "issueLabel": "data-source" },
-  { "id": "module-component-capacity", "stageId": "modules", "title": "domestic module-component manufacturing capacity", "missingMeasure": "Capacity for glass, frames, encapsulants, backsheets, junction boxes, ribbon, connectors, and paste", "usefulSourceWouldInclude": ["facility", "component", "capacity", "unit", "status"], "issueLabel": "data-source" },
-  { "id": "module-component-allocation", "stageId": "modules", "title": "module-component output allocated to solar", "missingMeasure": "Solar share of multi-market component factories", "usefulSourceWouldInclude": ["facility", "component", "period", "solar share"], "issueLabel": "data-source" },
-  { "id": "topcon-material-intensity", "stageId": "modules", "title": "current bifacial TOPCon material intensity", "missingMeasure": "Physical inputs per MWdc for mainstream modules", "usefulSourceWouldInclude": ["technology", "kg/MWdc", "year", "method"], "issueLabel": "data-source" },
-  { "id": "tracker-output", "stageId": "structures", "title": "actual U.S. tracker and racking output", "missingMeasure": "Operating nameplate, throughput, and utilization", "usefulSourceWouldInclude": ["facility", "period", "GW", "output", "utilization"], "issueLabel": "data-source" },
-  { "id": "tracker-tier-two", "stageId": "structures", "title": "origins of tracker motors and controls", "missingMeasure": "Tier-two origin of actuators, dampers, bearings, controls, and fasteners", "usefulSourceWouldInclude": ["component", "supplier", "factory country", "volume"], "issueLabel": "data-source" },
-  { "id": "inverter-install-base", "stageId": "inverters", "title": "inverter models installed at U.S. projects", "missingMeasure": "Project-to-inverter model and assembly location", "usefulSourceWouldInclude": ["project", "model", "capacity", "factory", "year"], "issueLabel": "data-source" },
-  { "id": "inverter-tier-two", "stageId": "inverters", "title": "upstream suppliers inside solar inverters", "missingMeasure": "Fabs and factories for semiconductors, PCBs, capacitors, and magnetics", "usefulSourceWouldInclude": ["inverter model", "component", "supplier", "factory country"], "issueLabel": "data-source" },
-  { "id": "grid-equipment-output", "stageId": "electrical", "title": "U.S. output of solar-suitable grid equipment", "missingMeasure": "Output, utilization, backlog, and lead time for transformers, switchgear, breakers, combiners, and cable", "usefulSourceWouldInclude": ["facility", "equipment class", "rating", "output", "lead time"], "issueLabel": "data-source" },
-  { "id": "transformer-tier-two", "stageId": "electrical", "title": "origins of transformer core components", "missingMeasure": "Production location for GOES, windings, bushings, and insulation", "usefulSourceWouldInclude": ["transformer model", "component", "supplier", "factory country"], "issueLabel": "data-source" },
-  { "id": "cdte-bom", "stageId": "cdte", "title": "a current open CdTe bill of materials", "missingMeasure": "Physical material and equipment inputs per MWdc", "usefulSourceWouldInclude": ["material", "quantity", "unit", "technology year", "license"], "issueLabel": "data-source" },
-  { "id": "byproduct-elasticity", "stageId": "cdte", "title": "tellurium and cadmium by-product supply response", "missingMeasure": "Recovery share and ability to expand supply", "usefulSourceWouldInclude": ["host metal", "recovery rate", "country", "period"], "issueLabel": "data-source" },
-  { "id": "cdte-stage-origin", "stageId": "cdte", "title": "domestic content at each CdTe stage", "missingMeasure": "Physical origin from refining through module assembly", "usefulSourceWouldInclude": ["stage", "facility", "country", "quantity", "period"], "issueLabel": "data-source" },
-  { "id": "cdte-capacity-comparison", "stageId": "cdte", "title": "a comparable CdTe capacity measure", "missingMeasure": "Method for comparing integrated CdTe lines with separate c-Si stages", "usefulSourceWouldInclude": ["stage boundary", "capacity", "unit", "method"], "issueLabel": "data-source" },
-  { "id": "domestic-installation-share", "stageId": "installed", "title": "domestic production used in annual installations", "missingMeasure": "Share of installed equipment supplied by domestic output", "usefulSourceWouldInclude": ["year", "technology", "domestic shipments", "installations"], "issueLabel": "data-source" },
-  { "id": "contracted-capacity", "stageId": "installed", "title": "operating capacity with firm customer demand", "missingMeasure": "Nameplate backed by binding offtake", "usefulSourceWouldInclude": ["facility", "capacity", "customer", "contract period"], "issueLabel": "data-source" },
-  { "id": "substitution-speed", "stageId": "installed", "title": "supplier substitution time after a disruption", "missingMeasure": "Qualified alternate capacity and switching time", "usefulSourceWouldInclude": ["component", "supplier", "qualification time", "available capacity"], "issueLabel": "data-source" },
-  { "id": "single-point-failures", "stageId": "installed", "title": "single-factory and single-route dependencies", "missingMeasure": "Concentration below national totals", "usefulSourceWouldInclude": ["facility", "port", "route", "market share", "alternatives"], "issueLabel": "data-source" },
-  { "id": "bga-license", "stageId": "installed", "title": "reuse permission for the BlueGreen Alliance facility layer", "missingMeasure": "Explicit permissive license or written permission", "usefulSourceWouldInclude": ["rights holder", "license", "covered files", "effective date"], "issueLabel": "data-source" }
+  {
+    "id": "demand-denominator",
+    "stageId": "installed",
+    "title": "a consistent annual U.S. demand denominator",
+    "missingMeasure": "Completed annual installations across utility and small-scale segments",
+    "usefulSourceWouldInclude": [
+      "calendar year",
+      "GWdc",
+      "segment",
+      "method",
+      "license"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "dc-ac-method",
+    "stageId": "installed",
+    "title": "a standard DC-to-AC equipment comparison",
+    "missingMeasure": "Documented conversion between GWdc demand and GWac equipment",
+    "usefulSourceWouldInclude": ["technology", "DC/AC ratio", "year", "method"],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "domestic-definition",
+    "stageId": "installed",
+    "title": "a physical definition of domestic content",
+    "missingMeasure": "Stage-specific origin rules that do not collapse assembly and inputs",
+    "usefulSourceWouldInclude": [
+      "definition",
+      "stage",
+      "origin rule",
+      "method"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "capacity-adjustments",
+    "stageId": "installed",
+    "title": "factory ramp, yield, and utilization adjustments",
+    "missingMeasure": "Observed conversion from nameplate to available output",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "period",
+      "nameplate",
+      "output",
+      "yield"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "solar-quartz",
+    "stageId": "raw-materials",
+    "title": "U.S. solar-grade quartz supply",
+    "missingMeasure": "Production suitable for solar polysilicon",
+    "usefulSourceWouldInclude": [
+      "mine",
+      "grade",
+      "tonnes",
+      "customers",
+      "license"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "silicon-output",
+    "stageId": "silicon",
+    "title": "actual U.S. silicon and polysilicon output",
+    "missingMeasure": "Annual output and utilization",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "period",
+      "tonnes",
+      "utilization",
+      "license"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "polysilicon-allocation",
+    "stageId": "silicon",
+    "title": "domestic polysilicon allocated to solar",
+    "missingMeasure": "Share sold to PV rather than semiconductors or exports",
+    "usefulSourceWouldInclude": [
+      "producer",
+      "period",
+      "product grade",
+      "destination"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "wafer-consumables",
+    "stageId": "wafers",
+    "title": "origins of wafer-production consumables",
+    "missingMeasure": "Supply of crucibles, diamond wire, and purification chemicals",
+    "usefulSourceWouldInclude": [
+      "component",
+      "supplier",
+      "factory country",
+      "volume"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "wafer-output",
+    "stageId": "wafers",
+    "title": "actual U.S. wafer output and utilization",
+    "missingMeasure": "Annual factory throughput, yield, and technology",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "period",
+      "GWdc",
+      "yield",
+      "technology"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "embedded-wafer-origin",
+    "stageId": "cells",
+    "title": "wafer origins embedded in imported cells",
+    "missingMeasure": "Upstream wafer and polysilicon origin by cell source country",
+    "usefulSourceWouldInclude": [
+      "cell factory",
+      "wafer supplier",
+      "polysilicon supplier",
+      "period"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "domestic-cell-use",
+    "stageId": "modules",
+    "title": "domestic cells used in U.S.-assembled modules",
+    "missingMeasure": "Share of module output using U.S.-made cells",
+    "usefulSourceWouldInclude": [
+      "module factory",
+      "cell factory",
+      "period",
+      "GWdc"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "project-module-procurement",
+    "stageId": "modules",
+    "title": "module models purchased by U.S. projects",
+    "missingMeasure": "Project-to-model and manufacturing-batch linkage",
+    "usefulSourceWouldInclude": [
+      "project",
+      "module model",
+      "factory",
+      "delivery year"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "module-component-capacity",
+    "stageId": "modules",
+    "title": "domestic module-component manufacturing capacity",
+    "missingMeasure": "Capacity for glass, frames, encapsulants, backsheets, junction boxes, ribbon, connectors, and paste",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "component",
+      "capacity",
+      "unit",
+      "status"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "module-component-allocation",
+    "stageId": "modules",
+    "title": "module-component output allocated to solar",
+    "missingMeasure": "Solar share of multi-market component factories",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "component",
+      "period",
+      "solar share"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "topcon-material-intensity",
+    "stageId": "modules",
+    "title": "current bifacial TOPCon material intensity",
+    "missingMeasure": "Physical inputs per MWdc for mainstream modules",
+    "usefulSourceWouldInclude": ["technology", "kg/MWdc", "year", "method"],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "tracker-output",
+    "stageId": "structures",
+    "title": "actual U.S. tracker and racking output",
+    "missingMeasure": "Operating nameplate, throughput, and utilization",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "period",
+      "GW",
+      "output",
+      "utilization"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "tracker-tier-two",
+    "stageId": "structures",
+    "title": "origins of tracker motors and controls",
+    "missingMeasure": "Tier-two origin of actuators, dampers, bearings, controls, and fasteners",
+    "usefulSourceWouldInclude": [
+      "component",
+      "supplier",
+      "factory country",
+      "volume"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "inverter-install-base",
+    "stageId": "inverters",
+    "title": "inverter models installed at U.S. projects",
+    "missingMeasure": "Project-to-inverter model and assembly location",
+    "usefulSourceWouldInclude": [
+      "project",
+      "model",
+      "capacity",
+      "factory",
+      "year"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "inverter-tier-two",
+    "stageId": "inverters",
+    "title": "upstream suppliers inside solar inverters",
+    "missingMeasure": "Fabs and factories for semiconductors, PCBs, capacitors, and magnetics",
+    "usefulSourceWouldInclude": [
+      "inverter model",
+      "component",
+      "supplier",
+      "factory country"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "grid-equipment-output",
+    "stageId": "electrical",
+    "title": "U.S. output of solar-suitable grid equipment",
+    "missingMeasure": "Output, utilization, backlog, and lead time for transformers, switchgear, breakers, combiners, and cable",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "equipment class",
+      "rating",
+      "output",
+      "lead time"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "transformer-tier-two",
+    "stageId": "electrical",
+    "title": "origins of transformer core components",
+    "missingMeasure": "Production location for GOES, windings, bushings, and insulation",
+    "usefulSourceWouldInclude": [
+      "transformer model",
+      "component",
+      "supplier",
+      "factory country"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "cdte-bom",
+    "stageId": "cdte",
+    "title": "a current open CdTe bill of materials",
+    "missingMeasure": "Physical material and equipment inputs per MWdc",
+    "usefulSourceWouldInclude": [
+      "material",
+      "quantity",
+      "unit",
+      "technology year",
+      "license"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "byproduct-elasticity",
+    "stageId": "cdte",
+    "title": "tellurium and cadmium by-product supply response",
+    "missingMeasure": "Recovery share and ability to expand supply",
+    "usefulSourceWouldInclude": [
+      "host metal",
+      "recovery rate",
+      "country",
+      "period"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "cdte-stage-origin",
+    "stageId": "cdte",
+    "title": "domestic content at each CdTe stage",
+    "missingMeasure": "Physical origin from refining through module assembly",
+    "usefulSourceWouldInclude": [
+      "stage",
+      "facility",
+      "country",
+      "quantity",
+      "period"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "cdte-capacity-comparison",
+    "stageId": "cdte",
+    "title": "a comparable CdTe capacity measure",
+    "missingMeasure": "Method for comparing integrated CdTe lines with separate c-Si stages",
+    "usefulSourceWouldInclude": [
+      "stage boundary",
+      "capacity",
+      "unit",
+      "method"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "domestic-installation-share",
+    "stageId": "installed",
+    "title": "domestic production used in annual installations",
+    "missingMeasure": "Share of installed equipment supplied by domestic output",
+    "usefulSourceWouldInclude": [
+      "year",
+      "technology",
+      "domestic shipments",
+      "installations"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "contracted-capacity",
+    "stageId": "installed",
+    "title": "operating capacity with firm customer demand",
+    "missingMeasure": "Nameplate backed by binding offtake",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "capacity",
+      "customer",
+      "contract period"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "substitution-speed",
+    "stageId": "installed",
+    "title": "supplier substitution time after a disruption",
+    "missingMeasure": "Qualified alternate capacity and switching time",
+    "usefulSourceWouldInclude": [
+      "component",
+      "supplier",
+      "qualification time",
+      "available capacity"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "single-point-failures",
+    "stageId": "installed",
+    "title": "single-factory and single-route dependencies",
+    "missingMeasure": "Concentration below national totals",
+    "usefulSourceWouldInclude": [
+      "facility",
+      "port",
+      "route",
+      "market share",
+      "alternatives"
+    ],
+    "issueLabel": "data-source"
+  },
+  {
+    "id": "bga-license",
+    "stageId": "installed",
+    "title": "reuse permission for the BlueGreen Alliance facility layer",
+    "missingMeasure": "Explicit permissive license or written permission",
+    "usefulSourceWouldInclude": [
+      "rights holder",
+      "license",
+      "covered files",
+      "effective date"
+    ],
+    "issueLabel": "data-source"
+  }
 ]

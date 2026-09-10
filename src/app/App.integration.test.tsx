@@ -11,7 +11,9 @@ it("renders the reference system, all stages, synthesis, unknowns, and sources",
     vi.fn().mockResolvedValue({ ok: true, json: async () => siteData }),
   );
   render(<App />);
-  expect(await screen.findByText("100 MWdc reference installation")).toBeVisible();
+  expect(
+    await screen.findByText("100 MWdc reference installation"),
+  ).toBeVisible();
   expect(screen.getByRole("heading", { name: "Raw materials" })).toBeVisible();
   expect(
     screen.getByRole("heading", { name: "Installed U.S. project" }),
@@ -19,5 +21,12 @@ it("renders the reference system, all stages, synthesis, unknowns, and sources",
   expect(
     screen.getByRole("heading", { name: "What we still do not know" }),
   ).toBeVisible();
-  expect(screen.getByRole("heading", { name: "Method and sources" })).toBeVisible();
+  expect(
+    screen.getByRole("heading", { name: "Method and sources" }),
+  ).toBeVisible();
+  expect(screen.getByText("Skip to the story")).toHaveAttribute(
+    "href",
+    "#main-content",
+  );
+  expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
 });

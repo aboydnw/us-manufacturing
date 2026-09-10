@@ -19,10 +19,7 @@ it("reports invalid generated data as an error", async () => {
 });
 
 it("reports an unsuccessful response", async () => {
-  vi.stubGlobal(
-    "fetch",
-    vi.fn().mockResolvedValue({ ok: false, status: 404 }),
-  );
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: false, status: 404 }));
 
   const { result } = renderHook(() => useSiteData());
   await waitFor(() => expect(result.current.status).toBe("error"));

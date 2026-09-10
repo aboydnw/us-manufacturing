@@ -6,6 +6,7 @@
   "packageManager": "yarn@4.13.0",
   "scripts": {
     "data:compile": "node --import tsx scripts/compile-data.ts",
+    "content:check": "node --import tsx scripts/check-content.ts",
     "predev": "corepack yarn data:compile",
     "dev": "vite",
     "prebuild": "corepack yarn data:compile",
@@ -14,7 +15,8 @@
     "typecheck": "tsc -b --pretty false",
     "lint": "oxlint src scripts",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "verify": "corepack yarn format:check && corepack yarn lint && corepack yarn typecheck && corepack yarn test && corepack yarn content:check && corepack yarn build"
   },
   "dependencies": {
     "@fontsource-variable/newsreader": "^5.2.8",

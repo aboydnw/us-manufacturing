@@ -12,7 +12,10 @@ import {
   type SiteData,
 } from "../src/data/schema";
 
-function uniqueById(records: Array<{ id?: string; source_id?: string }>, label: string) {
+function uniqueById(
+  records: Array<{ id?: string; source_id?: string }>,
+  label: string,
+) {
   const ids = new Set<string>();
   for (const record of records) {
     const id = record.id ?? record.source_id;
@@ -33,7 +36,9 @@ export function compileData(rootDir: string): SiteData {
       skip_empty_lines: true,
     }),
   );
-  const stages = StageSchema.array().parse(readJson(join(dataDir, "stages.json")));
+  const stages = StageSchema.array().parse(
+    readJson(join(dataDir, "stages.json")),
+  );
   const observationRows = parse(
     readFileSync(join(dataDir, "observations.csv"), "utf8"),
     {
@@ -71,7 +76,9 @@ export function compileData(rootDir: string): SiteData {
   uniqueById(observations, "observation");
   uniqueById(questions, "question");
 
-  const sourceById = new Map(sources.map((source) => [source.source_id, source]));
+  const sourceById = new Map(
+    sources.map((source) => [source.source_id, source]),
+  );
   const stageIds = new Set(stages.map((stage) => stage.id));
   const resolvedObservations = observations.map((observation) => {
     if (!stageIds.has(observation.stageId)) {
@@ -109,13 +116,19 @@ export function compileData(rootDir: string): SiteData {
 export function writeCompiledData(rootDir: string) {
   const outputPath = join(rootDir, "public/data/site-data.json");
   mkdirSync(dirname(outputPath), { recursive: true });
-  writeFileSync(outputPath, `${JSON.stringify(compileData(rootDir), null, 2)}\n`);
+  writeFileSync(
+    outputPath,
+    `${JSON.stringify(compileData(rootDir), null, 2)}\n`,
+  );
   return outputPath;
 }
 
 const currentFile = fileURLToPath(import.meta.url);
 const invokedFile = process.argv[1] ? resolve(process.argv[1]) : "";
-if (invokedFile && pathToFileURL(invokedFile).href === pathToFileURL(currentFile).href) {
+if (
+  invokedFile &&
+  pathToFileURL(invokedFile).href === pathToFileURL(currentFile).href
+) {
   const rootDir = resolve(dirname(currentFile), "..");
   console.log(`Compiled site data to ${writeCompiledData(rootDir)}`);
 }

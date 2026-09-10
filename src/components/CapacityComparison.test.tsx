@@ -7,7 +7,8 @@ it("refuses to compare tonnes of polysilicon directly with GWdc demand", () => {
   const modules = observationFixture({ unit: "GWdc/year" });
   expect(canCompare(polysilicon, modules)).toEqual({
     comparable: false,
-    reason: "These values use different units and require a documented conversion.",
+    reason:
+      "These values use different units and require a documented conversion.",
   });
 });
 

@@ -5,13 +5,17 @@ type ReferenceSystem = SiteData["referenceSystem"];
 
 export function ReferenceInstallation({ system }: { system: ReferenceSystem }) {
   return (
-    <section className="reference-installation" aria-labelledby="reference-title">
+    <section
+      className="reference-installation"
+      aria-labelledby="reference-title"
+    >
       <div className="reference-installation__intro">
         <p className="eyebrow">The system we follow</p>
         <h2 id="reference-title">{system.title}</h2>
         <p>
-          {system.configuration}, using a {system.inverterType.toLowerCase()}. The
-          benchmark describes a physical system—not observed national purchasing.
+          {system.configuration}, using a {system.inverterType.toLowerCase()}.
+          The benchmark describes a physical system—not observed national
+          purchasing.
         </p>
         <SourceDetails source={system.source} />
       </div>

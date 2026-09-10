@@ -1,0 +1,4 @@
+data/*.csv
+docs/research/
+docs/superpowers/
+public/data/site-data.json

@@ -46,7 +46,14 @@
     "title": "Module materials and assembly",
     "shortTitle": "Modules",
     "summary": "Cells are wired, sealed between protective layers, framed, tested, and shipped as modules.",
-    "inputs": ["cells", "glass", "aluminum frame", "encapsulant", "junction box", "ribbon"],
+    "inputs": [
+      "cells",
+      "glass",
+      "aluminum frame",
+      "encapsulant",
+      "junction box",
+      "ribbon"
+    ],
     "outputs": ["finished PV modules"]
   },
   {
@@ -66,7 +73,14 @@
     "title": "Inverters and controls",
     "shortTitle": "Inverters",
     "summary": "Power electronics convert module output from direct current into grid-ready alternating current.",
-    "inputs": ["semiconductors", "PCBs", "capacitors", "magnetics", "cooling", "enclosures"],
+    "inputs": [
+      "semiconductors",
+      "PCBs",
+      "capacitors",
+      "magnetics",
+      "cooling",
+      "enclosures"
+    ],
     "outputs": ["AC power", "plant controls"]
   },
   {
@@ -76,7 +90,12 @@
     "title": "Electrical balance of system",
     "shortTitle": "Electrical",
     "summary": "Cable, combiner boxes, switchgear, and transformers collect power and connect the plant to the grid.",
-    "inputs": ["copper and aluminum cable", "switchgear", "transformers", "steel"],
+    "inputs": [
+      "copper and aluminum cable",
+      "switchgear",
+      "transformers",
+      "steel"
+    ],
     "outputs": ["grid-compatible power"]
   },
   {

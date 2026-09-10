@@ -9,10 +9,15 @@ const sourceHeader =
 const sourceRow =
   "doe_pv_mfg_map_20260615,DOE map,DOE,https://example.com,Public domain,https://example.com/license,download,CSV,US,current,periodic,module,capacity,capacity,Nameplate only,P0,ready,2026-09-10\n";
 
-function fixture(options: { sourceId?: string; questionStageId?: string } = {}) {
+function fixture(
+  options: { sourceId?: string; questionStageId?: string } = {},
+) {
   const root = mkdtempSync(join(tmpdir(), "solar-data-"));
   mkdirSync(join(root, "data"));
-  writeFileSync(join(root, "data/source-registry.csv"), sourceHeader + sourceRow);
+  writeFileSync(
+    join(root, "data/source-registry.csv"),
+    sourceHeader + sourceRow,
+  );
   writeFileSync(
     join(root, "data/stages.json"),
     JSON.stringify([
@@ -45,7 +50,12 @@ function fixture(options: { sourceId?: string; questionStageId?: string } = {}) 
       benchmarkYear: 2025,
       sourceId: "doe_pv_mfg_map_20260615",
       components: [
-        { id: "modules", label: "Modules", quantity: "166,667", origin: "Mixed" },
+        {
+          id: "modules",
+          label: "Modules",
+          quantity: "166,667",
+          origin: "Mixed",
+        },
       ],
     }),
   );
@@ -80,8 +90,8 @@ describe("compileData", () => {
   });
 
   it("rejects a question with an unknown stage", () => {
-    expect(() =>
-      compileData(fixture({ questionStageId: "missing" })),
-    ).toThrow(/unknown stage id/i);
+    expect(() => compileData(fixture({ questionStageId: "missing" }))).toThrow(
+      /unknown stage id/i,
+    );
   });
 });

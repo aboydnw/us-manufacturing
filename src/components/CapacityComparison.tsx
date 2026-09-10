@@ -7,7 +7,8 @@ export function canCompare(
   if (first.unit !== second.unit) {
     return {
       comparable: false,
-      reason: "These values use different units and require a documented conversion.",
+      reason:
+        "These values use different units and require a documented conversion.",
     };
   }
   return { comparable: true };
@@ -38,7 +39,9 @@ export function CapacityComparison({
             <strong>{observation.displayValue}</strong>
           </div>
           <div className="capacity-comparison__track" aria-hidden="true">
-            <span style={{ width: `${(observation.value / maximum) * 100}%` }} />
+            <span
+              style={{ width: `${(observation.value / maximum) * 100}%` }}
+            />
           </div>
         </div>
       ))}

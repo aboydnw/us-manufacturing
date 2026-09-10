@@ -1,8 +1,4 @@
-import type {
-  Question,
-  ResolvedObservation,
-  Stage,
-} from "../data/schema";
+import type { Question, ResolvedObservation, Stage } from "../data/schema";
 import { CapacityComparison } from "./CapacityComparison";
 import { DataNeededCard } from "./DataNeededCard";
 import { EvidenceCard } from "./EvidenceCard";
@@ -25,7 +21,9 @@ export function StageChapter({
       aria-labelledby={`${stage.id}-title`}
     >
       <header className="stage-chapter__header">
-        <p className="stage-chapter__number">Stage {String(index + 1).padStart(2, "0")}</p>
+        <p className="stage-chapter__number">
+          Stage {String(index + 1).padStart(2, "0")}
+        </p>
         <div>
           <p className="eyebrow">
             {stage.technology === "c-si"
@@ -39,12 +37,17 @@ export function StageChapter({
         </div>
       </header>
 
-      <div className="stage-chapter__flow" aria-label="Stage inputs and outputs">
+      <div
+        className="stage-chapter__flow"
+        aria-label="Stage inputs and outputs"
+      >
         <div>
           <span>Inputs</span>
           <p>{stage.inputs.join(" · ")}</p>
         </div>
-        <span className="stage-chapter__arrow" aria-hidden="true">→</span>
+        <span className="stage-chapter__arrow" aria-hidden="true">
+          →
+        </span>
         <div>
           <span>Outputs</span>
           <p>{stage.outputs.join(" · ")}</p>
@@ -55,7 +58,10 @@ export function StageChapter({
         <div className="stage-chapter__evidence">
           <div className="section-label">
             <span>What the public evidence says</span>
-            <span>{observations.length} sourced {observations.length === 1 ? "claim" : "claims"}</span>
+            <span>
+              {observations.length} sourced{" "}
+              {observations.length === 1 ? "claim" : "claims"}
+            </span>
           </div>
           <CapacityComparison observations={observations} />
           <div className="evidence-grid">
@@ -66,7 +72,8 @@ export function StageChapter({
         </div>
       ) : (
         <p className="stage-chapter__no-observation">
-          We do not yet have a comparable public quantitative observation for this stage.
+          We do not yet have a comparable public quantitative observation for
+          this stage.
         </p>
       )}
 
@@ -74,7 +81,10 @@ export function StageChapter({
         <div className="stage-chapter__questions">
           <div className="section-label">
             <span>What we still need</span>
-            <span>{questions.length} open {questions.length === 1 ? "question" : "questions"}</span>
+            <span>
+              {questions.length} open{" "}
+              {questions.length === 1 ? "question" : "questions"}
+            </span>
           </div>
           <div className="questions-grid">
             {questions.map((question) => (
