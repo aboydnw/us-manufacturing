@@ -1,0 +1,5 @@
+{
+  "buildCommand": "corepack yarn build",
+  "outputDirectory": "dist",
+  "framework": "vite"
+}
