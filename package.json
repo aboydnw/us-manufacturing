@@ -17,8 +17,6 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@chakra-ui/react": "^3.36.1",
-    "@emotion/react": "^11.14.0",
     "@fontsource-variable/newsreader": "^5.2.8",
     "@fontsource-variable/public-sans": "^5.2.8",
     "csv-parse": "^6.1.0",

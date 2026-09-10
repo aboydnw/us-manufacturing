@@ -6,7 +6,7 @@
 
 **Architecture:** Use a Vite-built React single-page application deployed as static files on Vercel. Keep research inputs as small, reviewable CSV and JSON files in the repository; validate and compile them into one public JSON artifact at build time, then render a linear supply-chain narrative, evidence cards, source details, and unknown-data calls to action without a backend.
 
-**Tech Stack:** Yarn 4.13, React 19, TypeScript 6, Vite 8, Chakra UI 3, Zod 4, Vitest 4, Testing Library, Oxlint, Prettier, static Vercel hosting.
+**Tech Stack:** Yarn 4.13, React 19, TypeScript 6, Vite 8, semantic HTML and authored CSS, Zod 4, Vitest 4, Testing Library, Oxlint, Prettier, static Vercel hosting. Chakra UI was removed during implementation after the bundle report showed that the interface's native semantic components did not need its runtime.
 
 ## Global Constraints
 
