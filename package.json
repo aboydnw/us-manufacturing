@@ -5,7 +5,10 @@
   "type": "module",
   "packageManager": "yarn@4.13.0",
   "scripts": {
+    "data:compile": "node --import tsx scripts/compile-data.ts",
+    "predev": "corepack yarn data:compile",
     "dev": "vite",
+    "prebuild": "corepack yarn data:compile",
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "typecheck": "tsc -b --pretty false",

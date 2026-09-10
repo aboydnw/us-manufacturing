@@ -1,0 +1,102 @@
+[
+  {
+    "id": "raw-materials",
+    "order": 0,
+    "technology": "shared",
+    "title": "Raw materials",
+    "shortTitle": "Materials",
+    "summary": "Quartz, silver, copper, aluminum, steel, glass inputs, and specialty minerals enter the chain.",
+    "inputs": ["ore", "quartz", "energy"],
+    "outputs": ["industrial minerals", "refined metals"]
+  },
+  {
+    "id": "silicon",
+    "order": 1,
+    "technology": "c-si",
+    "title": "Silicon metal and polysilicon",
+    "shortTitle": "Polysilicon",
+    "summary": "Quartz is reduced to silicon metal, then purified into solar-grade polysilicon.",
+    "inputs": ["quartz", "carbon", "electricity", "process chemicals"],
+    "outputs": ["silicon metal", "solar-grade polysilicon"]
+  },
+  {
+    "id": "wafers",
+    "order": 2,
+    "technology": "c-si",
+    "title": "Ingots and wafers",
+    "shortTitle": "Wafers",
+    "summary": "Polysilicon is melted into crystal ingots and sliced into thin wafers.",
+    "inputs": ["polysilicon", "graphite crucibles", "diamond wire"],
+    "outputs": ["silicon wafers"]
+  },
+  {
+    "id": "cells",
+    "order": 3,
+    "technology": "c-si",
+    "title": "Solar cells",
+    "shortTitle": "Cells",
+    "summary": "Wafers are textured, doped, coated, and metallized into electricity-producing cells.",
+    "inputs": ["wafers", "silver paste", "process gases and chemicals"],
+    "outputs": ["solar cells"]
+  },
+  {
+    "id": "modules",
+    "order": 4,
+    "technology": "c-si",
+    "title": "Module materials and assembly",
+    "shortTitle": "Modules",
+    "summary": "Cells are wired, sealed between protective layers, framed, tested, and shipped as modules.",
+    "inputs": ["cells", "glass", "aluminum frame", "encapsulant", "junction box", "ribbon"],
+    "outputs": ["finished PV modules"]
+  },
+  {
+    "id": "structures",
+    "order": 5,
+    "technology": "shared",
+    "title": "Trackers and racking",
+    "shortTitle": "Structures",
+    "summary": "Steel foundations and moving structures hold modules and follow the sun.",
+    "inputs": ["steel", "zinc", "motors", "actuators", "controls"],
+    "outputs": ["installed tracker rows"]
+  },
+  {
+    "id": "inverters",
+    "order": 6,
+    "technology": "shared",
+    "title": "Inverters and controls",
+    "shortTitle": "Inverters",
+    "summary": "Power electronics convert module output from direct current into grid-ready alternating current.",
+    "inputs": ["semiconductors", "PCBs", "capacitors", "magnetics", "cooling", "enclosures"],
+    "outputs": ["AC power", "plant controls"]
+  },
+  {
+    "id": "electrical",
+    "order": 7,
+    "technology": "shared",
+    "title": "Electrical balance of system",
+    "shortTitle": "Electrical",
+    "summary": "Cable, combiner boxes, switchgear, and transformers collect power and connect the plant to the grid.",
+    "inputs": ["copper and aluminum cable", "switchgear", "transformers", "steel"],
+    "outputs": ["grid-compatible power"]
+  },
+  {
+    "id": "installed",
+    "order": 8,
+    "technology": "shared",
+    "title": "Installed U.S. project",
+    "shortTitle": "Installation",
+    "summary": "Manufactured equipment becomes an operating U.S. solar plant and sets the annual demand for the chain.",
+    "inputs": ["modules", "structures", "inverters", "electrical equipment"],
+    "outputs": ["solar generating capacity"]
+  },
+  {
+    "id": "cdte",
+    "order": 9,
+    "technology": "cdte",
+    "title": "CdTe comparison",
+    "shortTitle": "CdTe branch",
+    "summary": "Thin semiconductor layers deposited on glass replace the polysilicon, wafer, and separate cell stages.",
+    "inputs": ["glass", "cadmium", "tellurium", "conductive coatings"],
+    "outputs": ["thin-film PV modules"]
+  }
+]

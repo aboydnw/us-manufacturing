@@ -1,0 +1,16 @@
+{
+  "title": "100 MWdc reference installation",
+  "capacityMwDc": 100,
+  "configuration": "Utility-scale crystalline silicon with single-axis tracking",
+  "inverterType": "Central inverter",
+  "benchmarkYear": 2025,
+  "sourceId": "nrel_pvscm_2025",
+  "components": [
+    { "id": "modules", "label": "600 W bifacial modules", "quantity": "about 166,667 modules", "origin": "Modeled as U.S. assembly from imported components" },
+    { "id": "cells", "label": "Crystalline-silicon cells", "quantity": "one cell set per module", "origin": "Modeled from Southeast Asia" },
+    { "id": "module-materials", "label": "Glass, frame, encapsulant, junction box, and ribbon", "quantity": "scaled to 100 MWdc", "origin": "Modeled from several countries, with many inputs from China" },
+    { "id": "trackers", "label": "Single-axis tracker system", "quantity": "one structural system for 100 MWdc", "origin": "Major steel components modeled as domestic; dampers imported" },
+    { "id": "inverters", "label": "4 MW central inverters", "quantity": "19 units in the benchmark", "origin": "Modeled as imported from Europe" },
+    { "id": "electrical", "label": "Cable, combiners, switchgear, transformers, and substation", "quantity": "one plant collection system", "origin": "Mixed domestic and imported assumptions" }
+  ]
+}
