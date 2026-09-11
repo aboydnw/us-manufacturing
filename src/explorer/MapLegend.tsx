@@ -3,11 +3,7 @@ import { comparableFacilityUnit } from "../lib/facilityMeasures";
 
 export function MapLegend({ facilities }: { facilities: ResolvedFacility[] }) {
   if (!facilities.length) {
-    return (
-      <div className="map-legend" aria-label="Map legend">
-        No mapped U.S. facilities in the current public dataset
-      </div>
-    );
+    return null;
   }
   const measured = facilities.filter(
     (facility) => facility.measureValue !== null,

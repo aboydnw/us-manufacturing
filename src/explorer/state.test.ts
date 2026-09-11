@@ -2,10 +2,9 @@ import { describe, expect, it } from "vitest";
 import { createExplorerState, explorerReducer } from "./state";
 
 describe("explorerReducer", () => {
-  it("changes stage without changing geography or the general tab", () => {
+  it("changes stage without changing the general tab", () => {
     const state = {
       ...createExplorerState("raw-materials"),
-      geographyView: "global" as const,
       generalTab: "facilities" as const,
     };
     const next = explorerReducer(state, {
@@ -16,7 +15,6 @@ describe("explorerReducer", () => {
     });
     expect(next).toMatchObject({
       activeStageId: "modules",
-      geographyView: "global",
       generalTab: "facilities",
     });
   });

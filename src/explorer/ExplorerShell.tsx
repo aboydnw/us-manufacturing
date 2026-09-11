@@ -110,10 +110,6 @@ export function ExplorerShell({ data }: { data: SiteData }) {
             supplyMix={supplyMix}
             selectedCountryCode={selectedCountryCode}
             selectedFacilityId={selectedFacilityId}
-            geographyView={state.geographyView}
-            onGeographyChange={(view) =>
-              dispatch({ type: "set-geography", view })
-            }
             onSelectCountry={(code) =>
               dispatch({ type: "select-country", code })
             }

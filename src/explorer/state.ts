@@ -3,7 +3,6 @@ export type ExplorerSelection =
 
 export interface ExplorerState {
   activeStageId: string;
-  geographyView: "us" | "global";
   generalTab: "overview" | "facilities";
   selection: ExplorerSelection;
   navigatorExpanded: boolean;
@@ -17,7 +16,6 @@ export type ExplorerAction =
       validFacilityIds: string[];
       validCountryCodes: string[];
     }
-  | { type: "set-geography"; view: ExplorerState["geographyView"] }
   | { type: "set-tab"; tab: ExplorerState["generalTab"] }
   | { type: "select-facility"; id: string }
   | { type: "select-country"; code: string }
@@ -28,7 +26,6 @@ export type ExplorerAction =
 export function createExplorerState(activeStageId: string): ExplorerState {
   return {
     activeStageId,
-    geographyView: "us",
     generalTab: "overview",
     selection: null,
     navigatorExpanded: false,
@@ -54,8 +51,6 @@ export function explorerReducer(
             : null;
       return { ...state, activeStageId: action.stageId, selection };
     }
-    case "set-geography":
-      return { ...state, geographyView: action.view };
     case "set-tab":
       return { ...state, generalTab: action.tab, selection: null };
     case "select-facility":
