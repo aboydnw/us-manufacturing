@@ -33,3 +33,9 @@ it("requires evidence or a contribution question for every stage", () => {
 it("accepts the compiled publication data", () => {
   expect(() => checkContent(cloneData())).not.toThrow();
 });
+
+it("rejects a facility whose provenance no longer resolves", () => {
+  const data = cloneData();
+  data.facilities[0].sourceId = "missing-source";
+  expect(() => checkContent(data)).toThrow(/facility.*unknown source/i);
+});

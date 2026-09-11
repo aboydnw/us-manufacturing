@@ -25,3 +25,23 @@ it("reports an unsuccessful response", async () => {
   await waitFor(() => expect(result.current.status).toBe("error"));
   expect(result.current.error?.message).toContain("404");
 });
+
+it("rejects a legacy payload that omits map data collections", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        generatedAt: "2026-09-10T00:00:00.000Z",
+        sources: [],
+        stages: [],
+        observations: [],
+        questions: [],
+        referenceSystem: {},
+      }),
+    }),
+  );
+
+  const { result } = renderHook(() => useSiteData());
+  await waitFor(() => expect(result.current.status).toBe("error"));
+});

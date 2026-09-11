@@ -15,6 +15,8 @@ function isSiteData(value: unknown): value is SiteData {
     Array.isArray(candidate.stages) &&
     Array.isArray(candidate.observations) &&
     Array.isArray(candidate.questions) &&
+    Array.isArray(candidate.facilities) &&
+    Array.isArray(candidate.supplyMixes) &&
     Boolean(candidate.referenceSystem)
   );
 }

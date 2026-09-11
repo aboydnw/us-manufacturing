@@ -3,12 +3,14 @@ import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { parse } from "csv-parse/sync";
 import {
+  FacilitySchema,
   ObservationSchema,
   QuestionSchema,
   ReferenceSystemSchema,
   SiteDataSchema,
   SourceSchema,
   StageSchema,
+  SupplyMixSchema,
   type SiteData,
 } from "../src/data/schema";
 
@@ -67,6 +69,36 @@ export function compileData(rootDir: string): SiteData {
   const questions = QuestionSchema.array().parse(
     readJson(join(dataDir, "questions.json")),
   );
+  const facilityRows = parse(
+    readFileSync(join(dataDir, "facilities.csv"), "utf8"),
+    { columns: true, skip_empty_lines: true },
+  ) as Array<Record<string, string>>;
+  const facilities = FacilitySchema.array().parse(
+    facilityRows.map((row) => ({
+      id: row.id,
+      sourceId: row.source_id,
+      name: row.name,
+      company: row.company,
+      stageId: row.stage_id,
+      technology: row.technology,
+      facilityType: row.facility_type,
+      city: row.city,
+      state: row.state,
+      countryCode: row.country_code,
+      latitude: Number(row.latitude),
+      longitude: Number(row.longitude),
+      status: row.status,
+      measureType: row.measure_type,
+      measureValue: row.measure_value,
+      measureUnit: row.measure_unit,
+      measurePeriod: row.measure_period,
+      sourceUrl: row.source_url,
+      limitation: row.limitation,
+    })),
+  );
+  const supplyMixes = SupplyMixSchema.array().parse(
+    readJson(join(dataDir, "supply-mixes.json")),
+  );
   const referenceSystem = ReferenceSystemSchema.parse(
     readJson(join(dataDir, "reference-system.json")),
   );
@@ -75,6 +107,8 @@ export function compileData(rootDir: string): SiteData {
   uniqueById(stages, "stage");
   uniqueById(observations, "observation");
   uniqueById(questions, "question");
+  uniqueById(facilities, "facility");
+  uniqueById(supplyMixes, "supply mix");
 
   const sourceById = new Map(
     sources.map((source) => [source.source_id, source]),
@@ -87,6 +121,38 @@ export function compileData(rootDir: string): SiteData {
     const source = sourceById.get(observation.sourceId);
     if (!source) throw new Error(`Unknown source id: ${observation.sourceId}`);
     return { ...observation, source };
+  });
+  const resolvedFacilities = facilities.map((facility) => {
+    if (!stageIds.has(facility.stageId)) {
+      throw new Error(`Unknown stage id: ${facility.stageId}`);
+    }
+    const source = sourceById.get(facility.sourceId);
+    if (!source) throw new Error(`Unknown source id: ${facility.sourceId}`);
+    return { ...facility, source };
+  });
+
+  const countryData = readJson(
+    join(rootDir, "public/data/countries.geojson"),
+  ) as {
+    features?: Array<{ properties?: { code?: string } }>;
+  };
+  const countryCodes = new Set(
+    (countryData.features ?? [])
+      .map((feature) => feature.properties?.code)
+      .filter((code): code is string => Boolean(code)),
+  );
+  const resolvedSupplyMixes = supplyMixes.map((mix) => {
+    if (!stageIds.has(mix.stageId)) {
+      throw new Error(`Unknown stage id: ${mix.stageId}`);
+    }
+    const source = sourceById.get(mix.sourceId);
+    if (!source) throw new Error(`Unknown source id: ${mix.sourceId}`);
+    for (const country of mix.countries) {
+      if (!countryCodes.has(country.countryCode)) {
+        throw new Error(`Unknown country code: ${country.countryCode}`);
+      }
+    }
+    return { ...mix, source };
   });
 
   for (const question of questions) {
@@ -109,6 +175,8 @@ export function compileData(rootDir: string): SiteData {
     stages: stages.toSorted((a, b) => a.order - b.order),
     observations: resolvedObservations,
     questions,
+    facilities: resolvedFacilities,
+    supplyMixes: resolvedSupplyMixes,
     referenceSystem: { ...referenceSystem, source: referenceSource },
   });
 }

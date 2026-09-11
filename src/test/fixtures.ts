@@ -1,5 +1,6 @@
 import type {
   Question,
+  ResolvedFacility,
   ResolvedObservation,
   Source,
   Stage,
@@ -70,6 +71,34 @@ export function questionFixture(overrides: Partial<Question> = {}): Question {
     missingMeasure: "Annual factory output and utilization",
     usefulSourceWouldInclude: ["facility", "period", "output", "license"],
     issueLabel: "data-source",
+    ...overrides,
+  };
+}
+
+export function facilityFixture(
+  overrides: Partial<ResolvedFacility> = {},
+): ResolvedFacility {
+  return {
+    id: "factory-one",
+    sourceId: sourceFixture.source_id,
+    name: "Factory One",
+    company: "Example Solar",
+    stageId: "wafers",
+    technology: "c-si",
+    facilityType: "Wafers: wafers",
+    city: "Mesa",
+    state: "Arizona",
+    countryCode: "USA",
+    latitude: 33.4,
+    longitude: -111.8,
+    status: "active",
+    measureType: "nameplate-capacity",
+    measureValue: 2.5,
+    measureUnit: "GWdc/year",
+    measurePeriod: "2026-06-15",
+    sourceUrl: sourceFixture.url,
+    limitation: "Nameplate is not observed production.",
+    source: sourceFixture,
     ...overrides,
   };
 }

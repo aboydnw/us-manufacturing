@@ -6,15 +6,36 @@ The site is an editorial publication backed by local, reviewable source files. I
 
 Edit only the canonical files in `data/`:
 
-| File                    | Responsibility                                                                       |
-| ----------------------- | ------------------------------------------------------------------------------------ |
-| `source-registry.csv`   | Publisher, URL, license, access, coverage, limitations, priority, and review status  |
-| `stages.json`           | Ordered physical stages and c-Si/CdTe branch membership                              |
-| `observations.csv`      | Values, units, dates, evidence semantics, definitions, limitations, and calculations |
-| `reference-system.json` | The 100 MWdc benchmark and its component/origin assumptions                          |
-| `questions.json`        | Missing measures and the evidence a useful source would contain                      |
+| File                    | Responsibility                                                                               |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| `source-registry.csv`   | Publisher, URL, license, access, coverage, limitations, priority, and review status          |
+| `stages.json`           | Ordered physical stages and c-Si/CdTe branch membership                                      |
+| `observations.csv`      | Values, units, dates, evidence semantics, definitions, limitations, and calculations         |
+| `reference-system.json` | The 100 MWdc benchmark and its component/origin assumptions                                  |
+| `questions.json`        | Missing measures and the evidence a useful source would contain                              |
+| `facilities.csv`        | Normalized operating U.S. manufacturing facilities and comparable nameplate measures         |
+| `supply-mixes.json`     | Denominator-compatible individual-country U.S. supply series; empty is a valid unknown state |
 
 `public/data/site-data.json` is generated. Run `corepack yarn data:compile` after a canonical edit and commit the resulting diff so the exact public snapshot remains auditable.
+
+The display boundaries in `public/data/countries.geojson` and `public/data/us-states.geojson` are also generated, but are checked in so visitors never depend on a third-party tile service. They currently derive from Natural Earth Admin 0 Countries 1:50m v5.1.1 and the Census Bureau's 2025 1:20m state cartographic boundaries.
+
+## Facility and map refresh
+
+Download the dated DOE CSV, the pinned Natural Earth GeoJSON, and the Census state shapefile into a temporary directory. Extract the Census archive, then run:
+
+```bash
+node --import tsx scripts/prepare-map-data.ts \
+  /path/to/us_pv_mfg_map_YYYYMMDD.csv \
+  /path/to/ne_50m_admin_0_countries.geojson \
+  /path/to/cb_YYYY_us_state_20m.shp
+```
+
+The script includes only DOE records explicitly marked as manufacturing and only sectors mapped to the project's current stage taxonomy. It converts comparable MWdc/MWac capacities to GWdc/GWac and `kt/yr` silicon values to tonnes/year. Mixed product categories remain unsized even when DOE publishes a number; this prevents glass, connectors, module assembly, and electrical components from sharing a misleading scale.
+
+After any refresh, inspect added/removed facilities, confirm the DOE period and source registry entry, then run the compiler and full verification suite.
+
+`supply-mixes.json` is the exclusive input for country rankings and international flows. Add a series only when every country record uses the same product, period, measure, unit, denominator, and origin definition. Do not add “Rest of world,” another aggregate region, or unknown origin as a country: the application derives Rest of world and keeps unknown origin separate.
 
 ## Required evidence fields
 
