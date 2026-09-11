@@ -15,8 +15,6 @@ it("keeps facilities selectable when WebGL is unavailable", async () => {
       supplyMix={null}
       selectedCountryCode={null}
       selectedFacilityId={null}
-      geographyView="us"
-      onGeographyChange={() => undefined}
       onSelectCountry={() => undefined}
       onSelectFacility={onSelectFacility}
     />,
@@ -30,9 +28,7 @@ it("keeps facilities selectable when WebGL is unavailable", async () => {
   expect(onSelectFacility).toHaveBeenCalledWith("factory-one");
 });
 
-it("changes geography using labeled map controls", async () => {
-  const user = userEvent.setup();
-  const onGeographyChange = vi.fn();
+it("keeps the map focused on the U.S. without geography controls", () => {
   vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
   render(
     <SupplyMap
@@ -40,12 +36,27 @@ it("changes geography using labeled map controls", async () => {
       supplyMix={null}
       selectedCountryCode={null}
       selectedFacilityId={null}
-      geographyView="us"
-      onGeographyChange={onGeographyChange}
       onSelectCountry={() => undefined}
       onSelectFacility={() => undefined}
     />,
   );
-  await user.click(screen.getByRole("button", { name: "Global" }));
-  expect(onGeographyChange).toHaveBeenCalledWith("global");
+  expect(screen.queryByRole("group", { name: /map geography/i })).toBeNull();
+});
+
+it("centers missing facility and import-origin context over the map", () => {
+  vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(null);
+  render(
+    <SupplyMap
+      facilities={[]}
+      supplyMix={null}
+      selectedCountryCode={null}
+      selectedFacilityId={null}
+      onSelectCountry={() => undefined}
+      onSelectFacility={() => undefined}
+    />,
+  );
+
+  const status = screen.getByRole("status", { name: /map data availability/i });
+  expect(status).toHaveTextContent(/no mapped U\.S\. facilities/i);
+  expect(status).toHaveTextContent(/country-of-origin import data/i);
 });

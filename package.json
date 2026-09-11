@@ -6,10 +6,12 @@
   "packageManager": "yarn@4.13.0",
   "scripts": {
     "data:compile": "node --import tsx scripts/compile-data.ts",
+    "data:imports": "node --import tsx scripts/import-census-trade.ts",
+    "data:prepare-build": "node --import tsx scripts/prepare-build-data.ts",
     "content:check": "node --import tsx scripts/check-content.ts",
     "predev": "corepack yarn data:compile",
     "dev": "vite",
-    "prebuild": "corepack yarn data:compile",
+    "prebuild": "corepack yarn data:prepare-build && corepack yarn data:compile",
     "build": "tsc -b && vite build",
     "test": "vitest run",
     "test:e2e": "xvfb-run -a playwright test",

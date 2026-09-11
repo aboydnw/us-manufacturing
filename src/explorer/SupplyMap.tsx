@@ -16,7 +16,6 @@ import {
   resolveLabelCollisions,
   wrapProjectedX,
 } from "../lib/mapProjection";
-import { MapControls } from "./MapControls";
 import { MapLegend } from "./MapLegend";
 
 maplibregl.setWorkerUrl(maplibreWorkerUrl);
@@ -71,8 +70,6 @@ interface Props {
   supplyMix: ResolvedSupplyMix | null;
   selectedCountryCode: string | null;
   selectedFacilityId: string | null;
-  geographyView: "us" | "global";
-  onGeographyChange: (view: "us" | "global") => void;
   onSelectCountry: (code: string) => void;
   onSelectFacility: (id: string) => void;
 }
@@ -155,8 +152,6 @@ export function SupplyMap({
   supplyMix,
   selectedCountryCode,
   selectedFacilityId,
-  geographyView,
-  onGeographyChange,
   onSelectCountry,
   onSelectFacility,
 }: Props) {
@@ -285,16 +280,6 @@ export function SupplyMap({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map) return;
-    if (geographyView === "global") {
-      map.flyTo({ center: [0, 22], zoom: 1.25, essential: false });
-    } else {
-      map.fitBounds(US_BOUNDS, { padding: 28, duration: 500 });
-    }
-  }, [geographyView]);
-
-  useEffect(() => {
-    const map = mapRef.current;
     if (!map || !supplyMix) {
       setProjectedFlows([]);
       return;
@@ -347,8 +332,20 @@ export function SupplyMap({
   return (
     <section className="supply-map" role="region" aria-label="Solar supply map">
       <div ref={containerRef} className="supply-map__canvas" />
-      <MapControls value={geographyView} onChange={onGeographyChange} />
       <MapLegend facilities={facilities} />
+      {!facilities.length ? (
+        <div
+          className="supply-map__empty"
+          role="status"
+          aria-label="Map data availability"
+        >
+          <strong>No mapped U.S. facilities for this stage</strong>
+          <p>
+            The current public dataset does not include facility locations or
+            country-of-origin import data for this stage.
+          </p>
+        </div>
+      ) : null}
       {mapUnavailable ? (
         <div className="supply-map__fallback">
           <strong>Interactive map unavailable</strong>

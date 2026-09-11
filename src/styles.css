@@ -408,31 +408,32 @@ summary:focus-visible {
   height: 100%;
 }
 
-.map-controls {
+.supply-map__empty {
   position: absolute;
   z-index: 5;
-  top: 16px;
-  left: 16px;
-  display: flex;
-  padding: 3px;
+  top: 50%;
+  left: 50%;
+  width: min(390px, calc(100% - 48px));
+  padding: 20px 22px;
+  transform: translate(-50%, -50%);
   border: 1px solid #9bacb1;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 5px 16px rgb(29 58 70 / 12%);
+  background: rgba(255, 254, 251, 0.95);
+  box-shadow: 0 14px 34px rgb(35 63 75 / 14%);
+  text-align: center;
 }
 
-.map-controls button {
-  min-width: 60px;
-  padding: 7px 11px;
-  background: transparent;
+.supply-map__empty strong {
+  display: block;
+  font-family: "Newsreader Variable", serif;
+  font-size: 1.35rem;
+  line-height: 1.05;
+}
+
+.supply-map__empty p {
+  margin: 8px 0 0;
   color: var(--muted);
-  font-size: 0.7rem;
-  font-weight: 750;
-  cursor: pointer;
-}
-
-.map-controls button[aria-pressed="true"] {
-  background: var(--blue-dark);
-  color: white;
+  font-size: 0.76rem;
+  line-height: 1.45;
 }
 
 .map-legend {

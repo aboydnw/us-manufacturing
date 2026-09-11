@@ -55,17 +55,35 @@ async function waitForExplorer(page: Page) {
         ),
       )
       .toBeGreaterThan(0);
+    await expect
+      .poll(() =>
+        page.evaluate(() => {
+          const bounds = (
+            window as unknown as {
+              __solarMap: {
+                getBounds(): { getWest(): number; getEast(): number };
+              };
+            }
+          ).__solarMap.getBounds();
+          return bounds.getWest() <= -124 && bounds.getEast() >= -67;
+        }),
+      )
+      .toBe(true);
   }
 }
 
 test.describe("desktop explorer", () => {
   test.skip(({ isMobile }) => Boolean(isMobile));
 
-  test("captures overview, facilities, facility detail, and global geography", async ({
+  test("captures the U.S.-focused overview, facilities, and facility detail", async ({
     page,
   }) => {
     await page.goto("/");
     await waitForExplorer(page);
+    await expect(
+      page.getByRole("status", { name: "Map data availability" }),
+    ).toContainText("country-of-origin import data");
+    await expect(page.getByRole("button", { name: "Global" })).toHaveCount(0);
     await page.screenshot({
       path: resolve(screenshotDir, "desktop-overview.png"),
       fullPage: true,
@@ -90,13 +108,6 @@ test.describe("desktop explorer", () => {
     ).toBeVisible();
     await page.screenshot({
       path: resolve(screenshotDir, "desktop-facility-detail.png"),
-      fullPage: true,
-    });
-
-    await page.getByRole("button", { name: "Global" }).click();
-    await page.waitForTimeout(600);
-    await page.screenshot({
-      path: resolve(screenshotDir, "desktop-global.png"),
       fullPage: true,
     });
   });
