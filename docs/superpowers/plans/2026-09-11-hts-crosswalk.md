@@ -29,19 +29,19 @@
 - Produces: `HtsCrosswalkSchema`, `HtsCrosswalk`, and `HtsCrosswalkEntry`.
 - Consumes: Zod only.
 
-- [ ] **Step 1: Write failing schema tests**
+- [x] **Step 1: Write failing schema tests**
 
 Test a complete cells/modules fixture and assert rejection of a non-ten-digit code, a reversed effective period, and duplicate stage/code/start-date classifications.
 
-- [ ] **Step 2: Run the focused tests and verify RED**
+- [x] **Step 2: Run the focused tests and verify RED**
 
 Run `corepack yarn test src/data/htsCrosswalk.test.ts`; expect failure because the schema module does not exist.
 
-- [ ] **Step 3: Implement the schema and artifact**
+- [x] **Step 3: Implement the schema and artifact**
 
 Define strict schemas for metadata, query semantics, classification scope, effective periods, provenance, and domain refinements. Add the two approved current classifications with direct-origin limitations and official source URLs.
 
-- [ ] **Step 4: Run the focused tests and verify GREEN**
+- [x] **Step 4: Run the focused tests and verify GREEN**
 
 Run `corepack yarn test src/data/htsCrosswalk.test.ts`; expect all focused tests to pass.
 
@@ -55,19 +55,19 @@ Run `corepack yarn test src/data/htsCrosswalk.test.ts`; expect all focused tests
 - Consumes: `HtsCrosswalkSchema` and canonical `data/hts-crosswalk.json`.
 - Produces: compilation failure for unknown crosswalk stage/source references while leaving `SiteData` unchanged.
 
-- [ ] **Step 1: Write failing compiler tests**
+- [x] **Step 1: Write failing compiler tests**
 
 Extend the fixture writer with an HTS crosswalk and assert that unknown stage and source IDs are rejected.
 
-- [ ] **Step 2: Run compiler tests and verify RED**
+- [x] **Step 2: Run compiler tests and verify RED**
 
 Run `corepack yarn test scripts/compile-data.test.ts`; expect the new invalid-reference cases to pass incorrectly until compiler validation is implemented.
 
-- [ ] **Step 3: Validate the crosswalk during compilation**
+- [x] **Step 3: Validate the crosswalk during compilation**
 
 Parse `data/hts-crosswalk.json`, verify every entry's stage and classification/validation source IDs, and do not add it to the returned runtime payload.
 
-- [ ] **Step 4: Run compiler tests and verify GREEN**
+- [x] **Step 4: Run compiler tests and verify GREEN**
 
 Run `corepack yarn test scripts/compile-data.test.ts`; expect all compiler tests to pass.
 
@@ -80,14 +80,14 @@ Run `corepack yarn test scripts/compile-data.test.ts`; expect all compiler tests
 **Interfaces:**
 - Documents: ownership, update procedure, Census query contract, direct-origin limitation, and importer handoff.
 
-- [ ] **Step 1: Document the canonical artifact**
+- [x] **Step 1: Document the canonical artifact**
 
 Add the crosswalk to the README data workflow and add a maintenance section with exact classification scope, annual review procedure, and downstream aggregation rules.
 
-- [ ] **Step 2: Run complete verification**
+- [x] **Step 2: Run complete verification**
 
 Run `corepack yarn verify`; require formatting, lint, type checking, all tests, content validation, and production build to pass.
 
-- [ ] **Step 3: Inspect the final diff**
+- [x] **Step 3: Inspect the final diff**
 
 Run `git diff --check` and confirm the runtime `SiteData` shape and `data/supply-mixes.json` are unchanged.

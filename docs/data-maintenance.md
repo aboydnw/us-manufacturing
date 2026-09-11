@@ -14,6 +14,7 @@ Edit only the canonical files in `data/`:
 | `reference-system.json` | The 100 MWdc benchmark and its component/origin assumptions                                  |
 | `questions.json`        | Missing measures and the evidence a useful source would contain                              |
 | `facilities.csv`        | Normalized operating U.S. manufacturing facilities and comparable nameplate measures         |
+| `hts-crosswalk.json`    | Versioned HTS classifications and Census import-query semantics                              |
 | `supply-mixes.json`     | Denominator-compatible individual-country U.S. supply series; empty is a valid unknown state |
 
 `public/data/site-data.json` is generated. Run `corepack yarn data:compile` after a canonical edit and commit the resulting diff so the exact public snapshot remains auditable.
@@ -36,6 +37,21 @@ The script includes only DOE records explicitly marked as manufacturing and only
 After any refresh, inspect added/removed facilities, confirm the DOE period and source registry entry, then run the compiler and full verification suite.
 
 `supply-mixes.json` is the exclusive input for country rankings and international flows. Add a series only when every country record uses the same product, period, measure, unit, denominator, and origin definition. Do not add “Rest of world,” another aggregate region, or unknown origin as a country: the application derives Rest of world and keeps unknown origin separate.
+
+## HTS crosswalk maintenance
+
+`hts-crosswalk.json` is ingestion metadata, not a trade-data snapshot. The initial approved scope contains these statistical reporting numbers, both effective January 27, 2022:
+
+- `8541420010`: crystalline-silicon photovoltaic cells not assembled in modules or panels;
+- `8541430010`: crystalline-silicon photovoltaic cells assembled in modules or panels.
+
+Review the crosswalk against the current USITC Harmonized Tariff Schedule at least annually and whenever a revision changes chapter 85 statistical reporting numbers. Preserve an expired classification by setting its exclusive `effectiveTo` date and adding a successor entry; do not rewrite its historical effective period. Update `version` and `lastVerified` in the same review.
+
+The future Census importer must use the entry active for the requested month and request U.S. imports for consumption by individual country. `CON_VAL_MO` is the approved common aggregation field and represents customs value in U.S. dollars. `CON_QY1_MO` and `UNIT_QY1` may be retained as supporting data, but quantities with unlike units must never be summed or presented as a shared physical measure.
+
+Every derived country record represents direct import origin only and must use `originType: "direct"`. It does not establish where embedded cells, wafers, polysilicon, metals, or other upstream inputs originated. Entries explicitly exclude other tariff headings under which cells or modules may arrive as parts or subassemblies; expanding that scope requires a separately reviewed crosswalk entry rather than an undocumented query change.
+
+The compiler validates crosswalk structure and checks every stage and source reference. It deliberately does not place the crosswalk in `public/data/site-data.json` or generate `supply-mixes.json`. A future importer owns fetching, period selection, country-code normalization, aggregation, unknown-origin accounting, and creation of a reviewable supply-mix snapshot.
 
 ## Required evidence fields
 

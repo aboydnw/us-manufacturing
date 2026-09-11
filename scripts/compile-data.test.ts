@@ -16,6 +16,8 @@ function fixture(
     facilitySourceId?: string;
     facilityStageId?: string;
     supplyMixes?: unknown[];
+    htsStageId?: string;
+    htsSourceId?: string;
   } = {},
 ) {
   const root = mkdtempSync(join(tmpdir(), "solar-data-"));
@@ -89,6 +91,39 @@ function fixture(
   writeFileSync(
     join(root, "data/supply-mixes.json"),
     JSON.stringify(options.supplyMixes ?? []),
+  );
+  writeFileSync(
+    join(root, "data/hts-crosswalk.json"),
+    JSON.stringify({
+      version: "2026.1",
+      lastVerified: "2026-09-11",
+      classificationSourceId: options.htsSourceId ?? "doe_pv_mfg_map_20260615",
+      tradeDataSourceId: "doe_pv_mfg_map_20260615",
+      entries: [
+        {
+          id: "csi-modules-8541430010-2022",
+          stageId: options.htsStageId ?? "modules",
+          technology: "c-si",
+          htsCode: "8541430010",
+          description:
+            "Crystalline silicon photovoltaic cells assembled in modules or made up into panels",
+          effectiveFrom: "2022-01-27",
+          effectiveTo: null,
+          tradeFlow: "imports-for-consumption",
+          countryDimension: "individual-country",
+          valueField: "CON_VAL_MO",
+          quantityField: "CON_QY1_MO",
+          unitField: "UNIT_QY1",
+          preferredMeasure: "customs-value-usd",
+          originType: "direct",
+          includes: ["Crystalline-silicon photovoltaic modules"],
+          excludes: ["Embedded upstream material origins"],
+          limitation: "Direct origin only.",
+          classificationSourceUrl: "https://example.com/hts",
+          validationSourceIds: ["doe_pv_mfg_map_20260615"],
+        },
+      ],
+    }),
   );
   writeFileSync(
     join(root, "public/data/countries.geojson"),
@@ -196,6 +231,18 @@ describe("compileData", () => {
   it("rejects a facility with an unknown stage", () => {
     expect(() => compileData(fixture({ facilityStageId: "missing" }))).toThrow(
       /unknown stage id/i,
+    );
+  });
+
+  it("rejects an HTS classification with an unknown stage", () => {
+    expect(() => compileData(fixture({ htsStageId: "missing" }))).toThrow(
+      /unknown HTS stage id/i,
+    );
+  });
+
+  it("rejects an HTS crosswalk with an unknown source", () => {
+    expect(() => compileData(fixture({ htsSourceId: "missing" }))).toThrow(
+      /unknown HTS source id/i,
     );
   });
 

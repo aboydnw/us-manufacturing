@@ -13,6 +13,7 @@ import {
   SupplyMixSchema,
   type SiteData,
 } from "../src/data/schema";
+import { HtsCrosswalkSchema } from "../src/data/htsCrosswalk";
 
 function uniqueById(
   records: Array<{ id?: string; source_id?: string }>,
@@ -99,6 +100,9 @@ export function compileData(rootDir: string): SiteData {
   const supplyMixes = SupplyMixSchema.array().parse(
     readJson(join(dataDir, "supply-mixes.json")),
   );
+  const htsCrosswalk = HtsCrosswalkSchema.parse(
+    readJson(join(dataDir, "hts-crosswalk.json")),
+  );
   const referenceSystem = ReferenceSystemSchema.parse(
     readJson(join(dataDir, "reference-system.json")),
   );
@@ -114,6 +118,21 @@ export function compileData(rootDir: string): SiteData {
     sources.map((source) => [source.source_id, source]),
   );
   const stageIds = new Set(stages.map((stage) => stage.id));
+  const htsSourceIds = new Set([
+    htsCrosswalk.classificationSourceId,
+    htsCrosswalk.tradeDataSourceId,
+    ...htsCrosswalk.entries.flatMap((entry) => entry.validationSourceIds),
+  ]);
+  for (const sourceId of htsSourceIds) {
+    if (!sourceById.has(sourceId)) {
+      throw new Error(`Unknown HTS source id: ${sourceId}`);
+    }
+  }
+  for (const entry of htsCrosswalk.entries) {
+    if (!stageIds.has(entry.stageId)) {
+      throw new Error(`Unknown HTS stage id: ${entry.stageId}`);
+    }
+  }
   const resolvedObservations = observations.map((observation) => {
     if (!stageIds.has(observation.stageId)) {
       throw new Error(`Unknown stage id: ${observation.stageId}`);
