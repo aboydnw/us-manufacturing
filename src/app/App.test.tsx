@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import { afterEach, vi } from "vitest";
 import { App } from "./App";
 
@@ -22,5 +22,7 @@ it("keeps research and method controls out of the header", () => {
 
   const header = screen.getByRole("banner");
   expect(header).not.toHaveTextContent(/open research/i);
-  expect(header).not.toHaveTextContent(/^method$/i);
+  expect(
+    within(header).queryByRole("button", { name: /^method$/i }),
+  ).not.toBeInTheDocument();
 });
