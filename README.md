@@ -16,6 +16,14 @@ corepack yarn dev
 
 The development server compiles the canonical files in `data/` into `public/data/site-data.json` before Vite starts.
 
+Country-import refreshes require a free Census Data API key supplied through `CENSUS_API_KEY`. The key is used only by the local ingestion command and must never be committed.
+
+```bash
+export CENSUS_API_KEY="your-census-api-key"
+corepack yarn data:imports --year 2025
+corepack yarn data:compile
+```
+
 ## Verification
 
 ```bash

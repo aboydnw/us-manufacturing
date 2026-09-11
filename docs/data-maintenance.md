@@ -47,11 +47,24 @@ After any refresh, inspect added/removed facilities, confirm the DOE period and 
 
 Review the crosswalk against the current USITC Harmonized Tariff Schedule at least annually and whenever a revision changes chapter 85 statistical reporting numbers. Preserve an expired classification by setting its exclusive `effectiveTo` date and adding a successor entry; do not rewrite its historical effective period. Update `version` and `lastVerified` in the same review.
 
-The future Census importer must use the entry active for the requested month and request U.S. imports for consumption by individual country. `CON_VAL_MO` is the approved common aggregation field and represents customs value in U.S. dollars. `CON_QY1_MO` and `UNIT_QY1` may be retained as supporting data, but quantities with unlike units must never be summed or presented as a shared physical measure.
+The Census importer uses the entry active for the requested year and requests U.S. imports for consumption by individual country, one HTS code and month per request. `CON_VAL_MO` is the approved common aggregation field and represents customs value in U.S. dollars. `CON_QY1_MO` and `UNIT_QY1` are parsed as supporting data, but quantities with unlike units are never summed or presented as a shared physical measure.
 
 Every derived country record represents direct import origin only and must use `originType: "direct"`. It does not establish where embedded cells, wafers, polysilicon, metals, or other upstream inputs originated. Entries explicitly exclude other tariff headings under which cells or modules may arrive as parts or subassemblies; expanding that scope requires a separately reviewed crosswalk entry rather than an undocumented query change.
 
-The compiler validates crosswalk structure and checks every stage and source reference. It deliberately does not place the crosswalk in `public/data/site-data.json` or generate `supply-mixes.json`. A future importer owns fetching, period selection, country-code normalization, aggregation, unknown-origin accounting, and creation of a reviewable supply-mix snapshot.
+The compiler validates crosswalk structure and checks every stage and source reference. It deliberately does not place the crosswalk in `public/data/site-data.json`.
+
+To refresh a complete calendar year, request a free Census API key and keep it outside the repository:
+
+```bash
+export CENSUS_API_KEY="your-census-api-key"
+corepack yarn data:imports --year 2025
+corepack yarn data:compile
+corepack yarn verify
+```
+
+The importer fails before writing when the key is absent, an API response is malformed, a returned HTS code differs from the requested code, a positive-value Census country cannot be mapped to the checked-in Natural Earth geography, or a generated series fails the existing supply-mix schema. Only after every month and classification succeeds does it atomically replace matching generated series in `supply-mixes.json`; unrelated reviewed series remain intact.
+
+The Census API terms permit retrieving, analyzing, and displaying its data. Keep the Census source attribution, clearly label the checked-in output as a derived aggregation, and never imply Census endorsement or describe a transformed result as an unmodified Census table.
 
 ## Required evidence fields
 

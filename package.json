@@ -6,6 +6,7 @@
   "packageManager": "yarn@4.13.0",
   "scripts": {
     "data:compile": "node --import tsx scripts/compile-data.ts",
+    "data:imports": "node --import tsx scripts/import-census-trade.ts",
     "content:check": "node --import tsx scripts/check-content.ts",
     "predev": "corepack yarn data:compile",
     "dev": "vite",
