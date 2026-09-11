@@ -12,16 +12,6 @@ function Header({ sources = [] }: { sources?: Source[] }) {
       <h1>How dependent is a U.S. solar installation on other countries?</h1>
       <nav aria-label="Project information">
         <details>
-          <summary>Method</summary>
-          <div className="header-popover">
-            <strong>Evidence before answers</strong>
-            <p>
-              Capacity, production, imports, modeled demand, and announcements
-              remain separate. Missing evidence is shown as unknown—not zero.
-            </p>
-          </div>
-        </details>
-        <details>
           <summary>Sources</summary>
           <div className="header-popover header-popover--sources">
             <strong>{sources.length} reviewed sources</strong>
@@ -37,18 +27,6 @@ function Header({ sources = [] }: { sources?: Source[] }) {
             </ul>
           </div>
         </details>
-        <a
-          href="https://github.com/aboydnw/us-manufacturing"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Open research repository"
-        >
-          <span className="research-link__wide">Open research</span>
-          <span className="research-link__short" aria-hidden="true">
-            Repo
-          </span>{" "}
-          ↗
-        </a>
       </nav>
     </header>
   );
