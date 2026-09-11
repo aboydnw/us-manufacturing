@@ -16,7 +16,7 @@ corepack yarn dev
 
 The development server compiles the canonical files in `data/` into `public/data/site-data.json` before Vite starts.
 
-Country-import refreshes require a free Census Data API key supplied through `CENSUS_API_KEY`. The key is used only by the local ingestion command and must never be committed.
+Country-import refreshes require a free Census Data API key supplied through `CENSUS_API_KEY`. The key is used only during ingestion and must never be committed. A production build refreshes the latest completed calendar year when the key is available; set `CENSUS_IMPORT_YEAR=YYYY` to pin another year.
 
 ```bash
 export CENSUS_API_KEY="your-census-api-key"
@@ -50,13 +50,13 @@ See [the data-maintenance guide](docs/data-maintenance.md) before changing evide
 
 ## Deployment
 
-The project is a static Vite site with no server functions or credentials.
+The project is a static Vite site with no server functions or runtime credentials. Cloudflare builds may use an encrypted build secret named `CENSUS_API_KEY` to refresh country imports before compiling the static site.
 
 - Build command: `corepack yarn build`
 - Output directory: `dist`
 - Framework preset: Vite
 
-These settings are committed in `vercel.json`. Connect the GitHub repository to Vercel and deploy the feature branch as a preview before promoting `main`.
+The checked-in `wrangler.jsonc` deploys `dist` with Workers Static Assets. Configure `CENSUS_API_KEY` under the Worker's **Settings → Build → Build Variables and Secrets**; do not add it as a plain variable or a runtime Worker binding. The existing build command will detect it automatically.
 
 ## Contributing data
 
