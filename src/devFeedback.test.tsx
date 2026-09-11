@@ -27,3 +27,24 @@ it("mounts the feedback recorder in a separate page root", async () => {
   ).toBeInTheDocument();
   expect(document.getElementById("riffrec-root")).not.toBeNull();
 });
+
+it("enables the feedback recorder for explicitly opted-in preview builds", async () => {
+  const { isDevFeedbackEnabled } = await import("./feedbackEnabled");
+
+  expect(isDevFeedbackEnabled(false, "true")).toBe(true);
+  expect(isDevFeedbackEnabled(false, undefined)).toBe(false);
+  expect(
+    isDevFeedbackEnabled(
+      false,
+      undefined,
+      "codex-remove-header-research-methods-us-solar-manufacturing.anthony-personal.workers.dev",
+    ),
+  ).toBe(true);
+  expect(
+    isDevFeedbackEnabled(
+      false,
+      undefined,
+      "us-solar-manufacturing.anthony-personal.workers.dev",
+    ),
+  ).toBe(false);
+});
