@@ -18,3 +18,16 @@ it("cycles the mobile sheet without duplicating its contents", async () => {
   await user.click(screen.getByRole("button", { name: /collapse panel/i }));
   expect(panel).toHaveAttribute("data-sheet-position", "peek");
 });
+
+it("reveals newly selected details when the sheet is collapsed", async () => {
+  const user = userEvent.setup();
+  const { rerender } = render(
+    <MobilePanel selectionKey={null}>Panel</MobilePanel>,
+  );
+  const panel = screen.getByTestId("mobile-panel");
+  await user.click(screen.getByRole("button", { name: /expand panel/i }));
+  await user.click(screen.getByRole("button", { name: /collapse panel/i }));
+  expect(panel).toHaveAttribute("data-sheet-position", "peek");
+  rerender(<MobilePanel selectionKey="country-CHN">Panel</MobilePanel>);
+  expect(panel).toHaveAttribute("data-sheet-position", "half");
+});

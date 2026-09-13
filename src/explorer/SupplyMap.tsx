@@ -86,11 +86,14 @@ interface ProjectedFlow {
   code: string;
   name: string;
   value: number;
-  x: number;
-  y: number;
+  anchorX: number;
+  anchorY: number;
+  labelX: number;
+  labelY: number;
   targetX: number;
   targetY: number;
   offscreen: boolean;
+  edge: "left" | "right" | "top" | "bottom" | null;
 }
 
 function facilityGeoJson(
@@ -164,6 +167,13 @@ export function SupplyMap({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const selectFacilityRef = useRef(onSelectFacility);
   selectFacilityRef.current = onSelectFacility;
+  const selectCountryRef = useRef(onSelectCountry);
+  selectCountryRef.current = onSelectCountry;
+  const facilitiesRef = useRef<FeatureCollection<Point>>(
+    facilityGeoJson(facilities),
+  );
+  const selectionRef = useRef({ selectedCountryCode, selectedFacilityId });
+  const [mapReady, setMapReady] = useState(false);
   const [mapUnavailable, setMapUnavailable] = useState(false);
   const [countryAnchors, setCountryAnchors] = useState(
     new Map<string, { longitude: number; latitude: number }>(),
@@ -173,6 +183,8 @@ export function SupplyMap({
     () => facilityGeoJson(facilities),
     [facilities],
   );
+  facilitiesRef.current = facilitiesGeoJson;
+  selectionRef.current = { selectedCountryCode, selectedFacilityId };
 
   useEffect(() => {
     const container = containerRef.current;
@@ -183,14 +195,20 @@ export function SupplyMap({
       return;
     }
 
-    const map = new maplibregl.Map({
-      container,
-      style: mapStyle,
-      bounds: US_BOUNDS,
-      fitBoundsOptions: { padding: 28 },
-      minZoom: 1,
-      attributionControl: false,
-    });
+    let map: maplibregl.Map;
+    try {
+      map = new maplibregl.Map({
+        container,
+        style: mapStyle,
+        bounds: US_BOUNDS,
+        fitBoundsOptions: { padding: 28 },
+        minZoom: 1,
+        attributionControl: false,
+      });
+    } catch {
+      setMapUnavailable(true);
+      return;
+    }
     mapRef.current = map;
     map.addControl(
       new maplibregl.NavigationControl({ showCompass: false }),
@@ -203,8 +221,15 @@ export function SupplyMap({
       }),
       "bottom-right",
     );
+    map.on("error", (event) => {
+      if (!map.isStyleLoaded() && event.error) setMapUnavailable(true);
+    });
     map.on("load", () => {
-      map.addSource("facilities", { type: "geojson", data: facilitiesGeoJson });
+      map.addSource("facilities", {
+        type: "geojson",
+        data: facilitiesRef.current,
+      });
+      const currentSelection = selectionRef.current;
       map.addLayer({
         id: "facility-circles",
         type: "circle",
@@ -216,7 +241,7 @@ export function SupplyMap({
           "circle-stroke-color": "#0c3e64",
           "circle-stroke-width": [
             "case",
-            ["==", ["get", "id"], selectedFacilityId ?? ""],
+            ["==", ["get", "id"], currentSelection.selectedFacilityId ?? ""],
             3,
             1.3,
           ],
@@ -232,6 +257,17 @@ export function SupplyMap({
       map.on("mouseleave", "facility-circles", () => {
         map.getCanvas().style.cursor = "";
       });
+      map.on("click", "countries-fill", (event: MapLayerMouseEvent) => {
+        const code = event.features?.[0]?.properties?.code as
+          string | undefined;
+        if (code) selectCountryRef.current(code);
+      });
+      map.setFilter("selected-country", [
+        "==",
+        ["get", "code"],
+        currentSelection.selectedCountryCode ?? "",
+      ]);
+      setMapReady(true);
       (window as unknown as { __solarMap?: maplibregl.Map }).__solarMap = map;
     });
     return () => {
@@ -262,14 +298,14 @@ export function SupplyMap({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map || !mapReady) return;
     const source = map.getSource("facilities") as GeoJSONSource | undefined;
     source?.setData(facilitiesGeoJson);
-  }, [facilitiesGeoJson]);
+  }, [facilitiesGeoJson, mapReady]);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !map.isStyleLoaded()) return;
+    if (!map || !mapReady) return;
     map.setFilter("selected-country", [
       "==",
       ["get", "code"],
@@ -281,7 +317,7 @@ export function SupplyMap({
       3,
       1.3,
     ]);
-  }, [selectedCountryCode, selectedFacilityId]);
+  }, [selectedCountryCode, selectedFacilityId, mapReady]);
 
   useEffect(() => {
     const map = mapRef.current;
@@ -321,19 +357,34 @@ export function SupplyMap({
         return [
           {
             ...record,
-            x: endpoint.x,
-            y: endpoint.y,
+            anchorX: endpoint.x,
+            anchorY: endpoint.y,
+            labelX: endpoint.x,
+            labelY: endpoint.y,
             targetX: target.x,
             targetY: target.y,
             offscreen: endpoint.offscreen,
+            edge: endpoint.edge,
           },
         ];
       });
       const resolved = resolveLabelCollisions(
-        flows.map((flow) => ({ ...flow, code: flow.code })),
+        flows.map((flow) => ({
+          ...flow,
+          x: flow.labelX,
+          y: flow.labelY,
+          code: flow.code,
+        })),
         26,
+        { top: 28, bottom: height - 40 },
       );
-      setProjectedFlows(resolved);
+      setProjectedFlows(
+        resolved.map(({ x, y, ...flow }) => ({
+          ...flow,
+          labelX: x,
+          labelY: y,
+        })),
+      );
     }
     update();
     activeMap.on("move", update);
@@ -384,15 +435,35 @@ export function SupplyMap({
         </ul>
       )}
       {projectedFlows.length ? (
-        <svg className="supply-map__flows" aria-hidden="true">
+        <svg className="supply-map__flows" aria-label="Import source flows">
           {projectedFlows.map((flow) => {
-            const controlX = (flow.x + flow.targetX) / 2;
-            const controlY = Math.min(flow.y, flow.targetY) - 70;
+            const controlX = (flow.anchorX + flow.targetX) / 2;
+            const controlY = Math.min(flow.anchorY, flow.targetY) - 70;
+            const path = `M ${flow.anchorX} ${flow.anchorY} Q ${controlX} ${controlY} ${flow.targetX} ${flow.targetY}`;
+            const maxValue = Math.max(
+              ...projectedFlows.map((item) => item.value),
+            );
+            const width = 1.5 + 5 * Math.sqrt(flow.value / maxValue);
             return (
-              <path
-                key={flow.code}
-                d={`M ${flow.x} ${flow.y} Q ${controlX} ${controlY} ${flow.targetX} ${flow.targetY}`}
-              />
+              <g key={flow.code}>
+                <path
+                  className="supply-map__flow-hit"
+                  d={path}
+                  onClick={() => onSelectCountry(flow.code)}
+                />
+                <path
+                  className="supply-map__flow-line"
+                  d={path}
+                  style={{ strokeWidth: width }}
+                />
+                {flow.labelX !== flow.anchorX ||
+                flow.labelY !== flow.anchorY ? (
+                  <path
+                    className="supply-map__flow-leader"
+                    d={`M ${flow.anchorX} ${flow.anchorY} L ${flow.labelX} ${flow.labelY}`}
+                  />
+                ) : null}
+              </g>
             );
           })}
         </svg>
@@ -402,7 +473,7 @@ export function SupplyMap({
           <button
             key={flow.code}
             type="button"
-            style={{ left: flow.x, top: flow.y }}
+            style={{ left: flow.labelX, top: flow.labelY }}
             onClick={() => onSelectCountry(flow.code)}
           >
             {flow.name}

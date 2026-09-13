@@ -25,7 +25,11 @@ export function buildSupplyRanking(
   }
 
   const sorted = mix.countries
-    .filter((country) => country.value !== null)
+    .filter(
+      (country) =>
+        country.value !== null &&
+        (mix.measure !== "imports" || country.countryCode !== "USA"),
+    )
     .sort(
       (a, b) =>
         (b.value ?? 0) - (a.value ?? 0) ||
@@ -35,23 +39,27 @@ export function buildSupplyRanking(
   const unitedStates = mix.countries.find(
     (country) => country.countryCode === "USA",
   );
-  const displayed = topFive.some((country) => country.countryCode === "USA")
-    ? topFive
-    : [
-        ...topFive,
-        unitedStates ?? {
-          countryCode: "USA",
-          countryName: "United States",
-          value: null,
-          originType: mix.countries[0]?.originType ?? ("direct" as const),
-        },
-      ];
+  const displayed =
+    mix.measure === "imports"
+      ? topFive
+      : topFive.some((country) => country.countryCode === "USA")
+        ? topFive
+        : [
+            ...topFive,
+            unitedStates ?? {
+              countryCode: "USA",
+              countryName: "United States",
+              value: null,
+              originType: mix.countries[0]?.originType ?? ("direct" as const),
+            },
+          ];
   const displayedCodes = new Set(
     displayed.map((country) => country.countryCode),
   );
   const restValue = mix.countries.reduce(
     (sum, country) =>
-      displayedCodes.has(country.countryCode)
+      displayedCodes.has(country.countryCode) ||
+      (mix.measure === "imports" && country.countryCode === "USA")
         ? sum
         : sum + (country.value ?? 0),
     0,

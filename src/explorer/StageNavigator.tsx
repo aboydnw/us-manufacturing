@@ -69,12 +69,22 @@ export function StageNavigator({
       onMouseLeave={() => onExpandedChange(false)}
       onFocus={() => onExpandedChange(true)}
     >
+      <button
+        type="button"
+        className="stage-navigator__toggle"
+        aria-expanded={expanded}
+        aria-controls="stage-navigator-options"
+        aria-label={expanded ? "Hide stage choices" : "Show all stages"}
+        onClick={() => onExpandedChange(!expanded)}
+      >
+        Stages <span aria-hidden="true">{expanded ? "−" : "+"}</span>
+      </button>
       <div className="stage-navigator__branches" aria-hidden="true">
         <span>Shared system</span>
         <span>Crystalline silicon</span>
         <span>Thin film</span>
       </div>
-      <ol className="stage-navigator__list">
+      <ol id="stage-navigator-options" className="stage-navigator__list">
         {stages.map((stage, index) => {
           const active = stage.id === activeStageId;
           const branch = branchName(stage);

@@ -4,6 +4,10 @@ import { InfoPanel } from "./InfoPanel";
 import { MobilePanel } from "./MobilePanel";
 import { StageNavigator } from "./StageNavigator";
 import { createExplorerState, explorerReducer } from "./state";
+import {
+  selectLatestSupplyMix,
+  sortComparableFacilities,
+} from "../lib/explorerData";
 
 const SupplyMap = lazy(() =>
   import("./SupplyMap").then((module) => ({ default: module.SupplyMap })),
@@ -20,10 +24,12 @@ export function ExplorerShell({ data }: { data: SiteData }) {
     data.stages[0];
   const facilities = useMemo(
     () =>
-      data.facilities.filter(
-        (facility) =>
-          facility.stageId === state.activeStageId &&
-          facility.status === "active",
+      sortComparableFacilities(
+        data.facilities.filter(
+          (facility) =>
+            facility.stageId === state.activeStageId &&
+            facility.status === "active",
+        ),
       ),
     [data.facilities, state.activeStageId],
   );
@@ -33,11 +39,10 @@ export function ExplorerShell({ data }: { data: SiteData }) {
   const questions = data.questions.filter(
     (question) => question.stageId === state.activeStageId,
   );
-  const supplyMix =
-    data.supplyMixes.find(
-      (mix) =>
-        mix.stageId === state.activeStageId && mix.completeness === "complete",
-    ) ?? null;
+  const supplyMix = selectLatestSupplyMix(
+    data.supplyMixes,
+    state.activeStageId,
+  );
   const selectedFacilityId =
     state.selection?.kind === "facility" ? state.selection.id : null;
   const selectedCountryCode =
@@ -48,11 +53,9 @@ export function ExplorerShell({ data }: { data: SiteData }) {
       .filter((facility) => facility.stageId === stageId)
       .map((facility) => facility.id);
     const validCountryCodes =
-      data.supplyMixes
-        .find(
-          (mix) => mix.stageId === stageId && mix.completeness === "complete",
-        )
-        ?.countries.map((country) => country.countryCode) ?? [];
+      selectLatestSupplyMix(data.supplyMixes, stageId)?.countries.map(
+        (country) => country.countryCode,
+      ) ?? [];
     dispatch({
       type: "set-stage",
       stageId,
@@ -121,7 +124,13 @@ export function ExplorerShell({ data }: { data: SiteData }) {
           />
         </Suspense>
       </div>
-      <MobilePanel>
+      <MobilePanel
+        selectionKey={
+          state.selection
+            ? `${state.selection.kind}-${state.selection.kind === "country" ? state.selection.code : state.selection.id}`
+            : null
+        }
+      >
         <InfoPanel
           stage={stage}
           facilities={facilities}

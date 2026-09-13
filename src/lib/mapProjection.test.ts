@@ -56,6 +56,24 @@ it("separates colliding edge labels while preserving their codes", () => {
   ]);
 });
 
+it("does not move labels on opposite viewport edges and keeps labels in bounds", () => {
+  expect(
+    resolveLabelCollisions(
+      [
+        { code: "LEFT", x: 20, y: 570, edge: "left" as const },
+        { code: "RIGHT", x: 980, y: 575, edge: "right" as const },
+        { code: "LEFT2", x: 20, y: 580, edge: "left" as const },
+      ],
+      26,
+      { top: 20, bottom: 580 },
+    ),
+  ).toEqual([
+    { code: "LEFT", x: 20, y: 554, edge: "left" },
+    { code: "LEFT2", x: 20, y: 580, edge: "left" },
+    { code: "RIGHT", x: 980, y: 575, edge: "right" },
+  ]);
+});
+
 it("creates flows only for individual foreign countries with values", () => {
   expect(
     buildFlowRecords([

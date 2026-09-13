@@ -7,10 +7,8 @@
   "scripts": {
     "data:compile": "node --import tsx scripts/compile-data.ts",
     "content:check": "node --import tsx scripts/check-content.ts",
-    "predev": "corepack yarn data:compile",
-    "dev": "vite",
-    "prebuild": "corepack yarn data:compile",
-    "build": "tsc -b && vite build",
+    "dev": "corepack yarn data:compile && vite",
+    "build": "corepack yarn data:compile && tsc -b && vite build",
     "test": "vitest run",
     "test:e2e": "xvfb-run -a playwright test",
     "typecheck": "tsc -b --pretty false",

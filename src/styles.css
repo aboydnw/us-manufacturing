@@ -268,8 +268,21 @@ summary:focus-visible {
 }
 
 .stage-navigator--expanded {
-  min-height: 154px;
   box-shadow: 0 14px 24px rgb(26 49 59 / 16%);
+}
+
+.stage-navigator__toggle {
+  position: absolute;
+  top: 7px;
+  right: 18px;
+  z-index: 2;
+  padding: 4px 7px;
+  border: 1px solid var(--rule);
+  background: white;
+  color: var(--blue-dark);
+  font-size: 0.65rem;
+  font-weight: 750;
+  cursor: pointer;
 }
 
 .stage-navigator__branches {
@@ -366,6 +379,13 @@ summary:focus-visible {
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.stage-navigator:not(.stage-navigator--expanded)
+  .stage-navigator__list
+  button:not(.is-active)
+  .stage-navigator__label {
+  visibility: hidden;
 }
 
 .stage-navigator__next {
@@ -545,11 +565,24 @@ summary:focus-visible {
   pointer-events: none;
 }
 
-.supply-map__flows path {
+.supply-map__flows .supply-map__flow-line {
   fill: none;
   stroke: #cf6143;
-  stroke-width: 2.5;
   stroke-dasharray: 7 4;
+}
+
+.supply-map__flows .supply-map__flow-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 18;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.supply-map__flows .supply-map__flow-leader {
+  fill: none;
+  stroke: #84341f;
+  stroke-width: 1;
 }
 
 .supply-map__flow-labels button {
@@ -1023,6 +1056,11 @@ summary:focus-visible {
     display: none;
   }
 
+  .stage-navigator--expanded .stage-navigator__label,
+  .stage-navigator__list button.is-active .stage-navigator__label {
+    display: block;
+  }
+
   .stage-navigator__list {
     grid-template-columns: repeat(10, minmax(38px, 1fr));
   }
@@ -1085,7 +1123,7 @@ summary:focus-visible {
   }
 
   .stage-navigator--expanded {
-    min-height: 145px;
+    box-shadow: 0 14px 24px rgb(26 49 59 / 16%);
   }
 
   .stage-navigator__list {

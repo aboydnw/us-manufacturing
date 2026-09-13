@@ -65,14 +65,39 @@ export function placeFlowEndpoint(
 }
 
 export function resolveLabelCollisions<
-  T extends ScreenPoint & { code: string },
->(labels: T[], minimumGap: number): T[] {
-  const sorted = [...labels].sort((a, b) => a.y - b.y);
-  let priorY = Number.NEGATIVE_INFINITY;
-  return sorted.map((label) => {
-    const y = Math.max(label.y, priorY + minimumGap);
-    priorY = y;
-    return { ...label, y };
+  T extends ScreenPoint & { code: string; edge?: ViewportEdge | null },
+>(
+  labels: T[],
+  minimumGap: number,
+  bounds?: { top: number; bottom: number },
+): T[] {
+  const groups = new Map<string, T[]>();
+  for (const label of labels) {
+    const key = label.edge ?? `point:${Math.round(label.x / minimumGap)}`;
+    groups.set(key, [...(groups.get(key) ?? []), label]);
+  }
+  return [...groups.values()].flatMap((group) => {
+    const sorted = [...group].sort((a, b) => a.y - b.y);
+    const ys = sorted.map((label, index) =>
+      Math.max(
+        label.y,
+        index ? (sorted[index - 1]?.y ?? label.y) + minimumGap : label.y,
+      ),
+    );
+    for (let index = 1; index < ys.length; index += 1) {
+      ys[index] = Math.max(ys[index]!, ys[index - 1]! + minimumGap);
+    }
+    if (bounds && ys.length && ys.at(-1)! > bounds.bottom) {
+      ys[ys.length - 1] = bounds.bottom;
+      for (let index = ys.length - 2; index >= 0; index -= 1) {
+        ys[index] = Math.min(ys[index]!, ys[index + 1]! - minimumGap);
+      }
+      if (ys[0]! < bounds.top) {
+        const shift = bounds.top - ys[0]!;
+        for (let index = 0; index < ys.length; index += 1) ys[index]! += shift;
+      }
+    }
+    return sorted.map((label, index) => ({ ...label, y: ys[index]! }));
   });
 }
 

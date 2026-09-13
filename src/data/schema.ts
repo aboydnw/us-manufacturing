@@ -182,6 +182,7 @@ export const SupplyMixSchema = z
     unknownOriginValue: nullableNumber,
   })
   .superRefine((mix, context) => {
+    const countryCodes = new Set<string>();
     const originTypes = new Set(mix.countries.map((item) => item.originType));
     if (originTypes.size > 1) {
       context.addIssue({
@@ -191,6 +192,14 @@ export const SupplyMixSchema = z
       });
     }
     for (const [index, country] of mix.countries.entries()) {
+      if (countryCodes.has(country.countryCode)) {
+        context.addIssue({
+          code: "custom",
+          message: "Country codes must be unique within a supply mix",
+          path: ["countries", index, "countryCode"],
+        });
+      }
+      countryCodes.add(country.countryCode);
       if (aggregateCountryNames.has(country.countryName.trim().toLowerCase())) {
         context.addIssue({
           code: "custom",
@@ -204,11 +213,24 @@ export const SupplyMixSchema = z
       0,
     );
     const tolerance = Math.max(0.001, mix.denominatorValue * 0.001);
-    if (knownTotal > mix.denominatorValue + tolerance) {
+    const accountedTotal = knownTotal + (mix.unknownOriginValue ?? 0);
+    if (accountedTotal > mix.denominatorValue + tolerance) {
       context.addIssue({
         code: "custom",
-        message: "Known country values exceed the supply-mix denominator",
+        message:
+          "Known and unknown origin values exceed the supply-mix denominator",
         path: ["countries"],
+      });
+    }
+    if (
+      mix.completeness === "complete" &&
+      Math.abs(accountedTotal - mix.denominatorValue) > tolerance
+    ) {
+      context.addIssue({
+        code: "custom",
+        message:
+          "A complete supply mix must reconcile to its denominator within 0.1%",
+        path: ["completeness"],
       });
     }
   });

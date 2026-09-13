@@ -34,6 +34,8 @@ it("exposes the current stage, branch labels, and next-stage action", async () =
   );
   expect(screen.getByText("Crystalline silicon")).toBeInTheDocument();
   expect(screen.getByText("Thin film")).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /show all stages/i }));
+  expect(onSelect).not.toHaveBeenCalled();
   await user.click(screen.getByRole("button", { name: /next: wafers/i }));
   expect(onSelect).toHaveBeenCalledWith("wafers");
 });

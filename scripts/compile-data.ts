@@ -96,9 +96,55 @@ export function compileData(rootDir: string): SiteData {
       limitation: row.limitation,
     })),
   );
-  const supplyMixes = SupplyMixSchema.array().parse(
-    readJson(join(dataDir, "supply-mixes.json")),
+  const rawSupplyMixes = readJson(join(dataDir, "supply-mixes.json"));
+  const countryData = readJson(
+    join(rootDir, "public/data/countries.geojson"),
+  ) as {
+    features?: Array<{ properties?: { code?: string } }>;
+  };
+  const countryCodes = new Set(
+    (countryData.features ?? [])
+      .map((feature) => feature.properties?.code)
+      .filter((code): code is string => Boolean(code)),
   );
+  if (Array.isArray(rawSupplyMixes)) {
+    for (const rawMix of rawSupplyMixes) {
+      if (
+        !rawMix ||
+        typeof rawMix !== "object" ||
+        !("countries" in rawMix) ||
+        !Array.isArray(rawMix.countries)
+      )
+        continue;
+      for (const rawCountry of rawMix.countries) {
+        const code =
+          rawCountry &&
+          typeof rawCountry === "object" &&
+          "countryCode" in rawCountry
+            ? rawCountry.countryCode
+            : null;
+        const name =
+          rawCountry &&
+          typeof rawCountry === "object" &&
+          "countryName" in rawCountry
+            ? rawCountry.countryName
+            : null;
+        const aggregateName =
+          typeof name === "string" &&
+          ["rest of world", "rest of asia", "other", "unknown"].includes(
+            name.trim().toLowerCase(),
+          );
+        if (
+          typeof code === "string" &&
+          !countryCodes.has(code) &&
+          !aggregateName
+        ) {
+          throw new Error(`Unknown country code: ${code}`);
+        }
+      }
+    }
+  }
+  const supplyMixes = SupplyMixSchema.array().parse(rawSupplyMixes);
   const referenceSystem = ReferenceSystemSchema.parse(
     readJson(join(dataDir, "reference-system.json")),
   );
@@ -131,16 +177,6 @@ export function compileData(rootDir: string): SiteData {
     return { ...facility, source };
   });
 
-  const countryData = readJson(
-    join(rootDir, "public/data/countries.geojson"),
-  ) as {
-    features?: Array<{ properties?: { code?: string } }>;
-  };
-  const countryCodes = new Set(
-    (countryData.features ?? [])
-      .map((feature) => feature.properties?.code)
-      .filter((code): code is string => Boolean(code)),
-  );
   const resolvedSupplyMixes = supplyMixes.map((mix) => {
     if (!stageIds.has(mix.stageId)) {
       throw new Error(`Unknown stage id: ${mix.stageId}`);
