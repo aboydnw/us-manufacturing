@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import type {
   GeoJSONSource,
@@ -183,8 +183,10 @@ export function SupplyMap({
     () => facilityGeoJson(facilities),
     [facilities],
   );
-  facilitiesRef.current = facilitiesGeoJson;
-  selectionRef.current = { selectedCountryCode, selectedFacilityId };
+  useLayoutEffect(() => {
+    facilitiesRef.current = facilitiesGeoJson;
+    selectionRef.current = { selectedCountryCode, selectedFacilityId };
+  }, [facilitiesGeoJson, selectedCountryCode, selectedFacilityId]);
 
   useEffect(() => {
     const container = containerRef.current;

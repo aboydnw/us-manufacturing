@@ -78,23 +78,32 @@ export function resolveLabelCollisions<
   }
   return [...groups.values()].flatMap((group) => {
     const sorted = [...group].sort((a, b) => a.y - b.y);
+    const effectiveGap = bounds
+      ? Math.min(
+          minimumGap,
+          sorted.length > 1
+            ? (bounds.bottom - bounds.top) / (sorted.length - 1)
+            : minimumGap,
+        )
+      : minimumGap;
     const ys = sorted.map((label, index) =>
       Math.max(
-        label.y,
-        index ? (sorted[index - 1]?.y ?? label.y) + minimumGap : label.y,
+        bounds
+          ? Math.min(bounds.bottom, Math.max(bounds.top, label.y))
+          : label.y,
+        index ? (sorted[index - 1]?.y ?? label.y) + effectiveGap : label.y,
       ),
     );
     for (let index = 1; index < ys.length; index += 1) {
-      ys[index] = Math.max(ys[index]!, ys[index - 1]! + minimumGap);
+      ys[index] = Math.max(ys[index]!, ys[index - 1]! + effectiveGap);
     }
     if (bounds && ys.length && ys.at(-1)! > bounds.bottom) {
       ys[ys.length - 1] = bounds.bottom;
       for (let index = ys.length - 2; index >= 0; index -= 1) {
-        ys[index] = Math.min(ys[index]!, ys[index + 1]! - minimumGap);
-      }
-      if (ys[0]! < bounds.top) {
-        const shift = bounds.top - ys[0]!;
-        for (let index = 0; index < ys.length; index += 1) ys[index]! += shift;
+        ys[index] = Math.max(
+          bounds.top,
+          Math.min(ys[index]!, ys[index + 1]! - effectiveGap),
+        );
       }
     }
     return sorted.map((label, index) => ({ ...label, y: ys[index]! }));
