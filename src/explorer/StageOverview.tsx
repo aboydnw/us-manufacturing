@@ -56,7 +56,11 @@ export function StageOverview({
       <section className="stage-overview__source" aria-label="Country sourcing">
         <div className="section-heading">
           <p className="section-heading__eyebrow">Country dependence</p>
-          <h3>Where does U.S. supply come from?</h3>
+          <h3>
+            {supplyMix?.measure === "imports"
+              ? "Where do U.S. imports come from?"
+              : "Where does U.S. supply come from?"}
+          </h3>
         </div>
         <SourceChart
           mix={supplyMix}

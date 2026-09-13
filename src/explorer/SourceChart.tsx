@@ -28,16 +28,26 @@ export function SourceChart({ mix, question, onSelectCountry }: Props) {
     );
   }
   if (!mix) return null;
+  const isImports = mix.measure === "imports";
 
   return (
     <figure className="source-chart" aria-labelledby="source-chart-title">
       <figcaption>
-        <span id="source-chart-title">Combined source</span>
+        <span id="source-chart-title">
+          {isImports ? "Sources of U.S. imports" : "Combined U.S. supply"}
+        </span>
         <strong>
           {mix.denominatorValue.toLocaleString()} {mix.unit} · {mix.period} ·{" "}
           {ranking.originType} origin
         </strong>
       </figcaption>
+      <p className="source-chart__denominator">
+        Percentages are shares of{" "}
+        {isImports
+          ? "recorded import value"
+          : "the documented U.S. supply denominator"}
+        .
+      </p>
       <ol>
         {ranking.rows.map((row) => {
           const percent = formatPercent(row.percentage);

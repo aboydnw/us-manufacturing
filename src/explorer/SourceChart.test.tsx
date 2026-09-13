@@ -65,3 +65,18 @@ it("selects real country rows and labels denominator metadata", async () => {
   expect(onSelectCountry).toHaveBeenCalledWith("CHN");
   expect(screen.getByText(/unknown origin/i)).toBeVisible();
 });
+
+it("labels import shares as imports rather than total U.S. supply", () => {
+  render(
+    <SourceChart
+      mix={{ ...readyMix, measure: "imports", unit: "USD" }}
+      onSelectCountry={() => undefined}
+    />,
+  );
+  expect(screen.getByText("Sources of U.S. imports")).toBeVisible();
+  expect(screen.getByText(/shares of recorded import value/i)).toBeVisible();
+  expect(screen.queryByText("Combined source")).not.toBeInTheDocument();
+  expect(
+    screen.queryByRole("button", { name: /united states/i }),
+  ).not.toBeInTheDocument();
+});

@@ -8,6 +8,19 @@ interface Props {
 export function CountryDetail({ code, mix }: Props) {
   const country = mix.countries.find((item) => item.countryCode === code);
   if (!country) {
+    if (code === "USA" && mix.measure === "actual-supply") {
+      return (
+        <article className="panel-detail">
+          <p className="panel-detail__eyebrow">Domestic evidence unavailable</p>
+          <h2>United States</h2>
+          <p>
+            A compatible domestic supply value is not available in this series;
+            it has not been treated as zero.
+          </p>
+          <p className="panel-detail__caveat">{mix.limitation}</p>
+        </article>
+      );
+    }
     return (
       <p>The selected country is not part of this stage's source series.</p>
     );
