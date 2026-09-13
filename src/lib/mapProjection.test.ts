@@ -74,6 +74,24 @@ it("does not move labels on opposite viewport edges and keeps labels in bounds",
   ]);
 });
 
+it("reduces spacing when an edge group cannot fit within vertical bounds", () => {
+  const result = resolveLabelCollisions(
+    [
+      { code: "A", x: 20, y: 0, edge: "left" as const },
+      { code: "B", x: 20, y: 1, edge: "left" as const },
+      { code: "C", x: 20, y: 2, edge: "left" as const },
+      { code: "D", x: 20, y: 3, edge: "left" as const },
+    ],
+    40,
+    { top: 20, bottom: 100 },
+  );
+
+  expect(result.map((label) => label.code)).toEqual(["A", "B", "C", "D"]);
+  expect(result[0]?.y).toBe(20);
+  expect(result.at(-1)?.y).toBe(100);
+  expect(result.every((label) => label.y >= 20 && label.y <= 100)).toBe(true);
+});
+
 it("creates flows only for individual foreign countries with values", () => {
   expect(
     buildFlowRecords([
