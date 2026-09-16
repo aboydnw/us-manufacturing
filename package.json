@@ -10,7 +10,7 @@
     "data:prepare-build": "node --import tsx scripts/prepare-build-data.ts",
     "content:check": "node --import tsx scripts/check-content.ts",
     "dev": "corepack yarn data:compile && vite",
-    "build": "corepack yarn data:prepare-build && corepack yarn data:compile && tsc -b && vite build",
+    "build": "corepack yarn data:compile && tsc -b && vite build",
     "test": "vitest run",
     "test:e2e": "xvfb-run -a playwright test",
     "typecheck": "tsc -b --pretty false",
