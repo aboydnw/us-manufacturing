@@ -71,7 +71,7 @@ export function buildCensusImportUrl(
   url.searchParams.set("I_COMMODITY", entry.htsCode);
   url.searchParams.set("CTY_CODE", "*");
   url.searchParams.set("SUMMARY_LVL", "DET");
-  url.searchParams.set("key", apiKey);
+  url.searchParams.set("key", apiKey.trim());
   return url.toString();
 }
 

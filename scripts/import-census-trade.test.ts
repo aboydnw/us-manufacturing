@@ -39,8 +39,8 @@ const countries = {
   ],
 };
 
-it("builds a keyed monthly Census query for one approved HTS code", () => {
-  const url = new URL(buildCensusImportUrl(entry, "2025-03", "secret-key"));
+it("builds a keyed monthly Census query and trims build-secret whitespace", () => {
+  const url = new URL(buildCensusImportUrl(entry, "2025-03", "  secret-key\n"));
   expect(url.origin + url.pathname).toBe(
     "https://api.census.gov/data/timeseries/intltrade/imports/hs",
   );
