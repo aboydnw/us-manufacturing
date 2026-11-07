@@ -56,7 +56,9 @@ The project is a static Vite site with no server functions or runtime credential
 - Output directory: `dist`
 - Framework preset: Vite
 
-The checked-in `wrangler.jsonc` deploys `dist` with Workers Static Assets. Configure `CENSUS_API_KEY` under the Worker's **Settings → Build → Build Variables and Secrets**; do not add it as a plain variable or a runtime Worker binding. The existing build command will detect it automatically.
+The checked-in `wrangler.jsonc` deploys `dist` with Workers Static Assets. The build command does not fetch Census data or use `CENSUS_API_KEY`. Refresh imports explicitly in a trusted local or ingestion environment, review and commit the snapshot, then build. Never expose the key as a runtime Worker binding or commit it.
+
+The importer requires all twelve months and a classification valid for the entire requested year. Partial-year classifications, missing detail values, malformed responses, and failed requests abort without replacing the checked-in snapshot. An empty snapshot remains an honest unknown state until a successful, reviewed refresh. If Census returns a non-JSON response, verify the API key and service availability before retrying; do not substitute estimates.
 
 ## Contributing data
 
