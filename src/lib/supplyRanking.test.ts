@@ -86,6 +86,16 @@ describe("buildSupplyRanking", () => {
     });
   });
 
+  it("does not invent a domestic row for an imports-only denominator", () => {
+    const result = buildSupplyRanking(
+      mix([country("CHN", "China", 80), country("VNM", "Vietnam", 20)], {
+        measure: "imports",
+      }),
+    );
+    if (result.status !== "ready") throw new Error("Expected ready ranking");
+    expect(result.rows.some((row) => row.code === "USA")).toBe(false);
+  });
+
   it("keeps unknown origin separate from rest of world", () => {
     const result = buildSupplyRanking(
       mix([country("USA", "United States", 60), country("CHN", "China", 25)], {

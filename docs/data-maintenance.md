@@ -64,7 +64,7 @@ corepack yarn verify
 
 The importer fails before writing when the key is absent, an API response is malformed, a returned HTS code differs from the requested code, a positive-value Census country cannot be mapped to the checked-in Natural Earth geography, or a generated series fails the existing supply-mix schema. Only after every month and classification succeeds does it atomically replace matching generated series in `supply-mixes.json`; unrelated reviewed series remain intact.
 
-Cloudflare's production build runs the same importer when an encrypted build secret named `CENSUS_API_KEY` is configured. It defaults to the latest completed calendar year; add a non-secret build variable named `CENSUS_IMPORT_YEAR` using `YYYY` only when a deployment must reproduce another year. Builds without the secret use the checked-in snapshot, so local and forked builds remain credential-free.
+Production builds compile the checked-in snapshot and never call the Census API. Refresh imports deliberately with `data:imports`, validate the resulting `supply-mixes.json`, and commit that reviewed snapshot before deployment. `data:prepare-build` remains available for an explicitly configured refresh job; it defaults to the latest completed calendar year or accepts `CENSUS_IMPORT_YEAR=YYYY`.
 
 The Census API terms permit retrieving, analyzing, and displaying its data. Keep the Census source attribution, clearly label the checked-in output as a derived aggregation, and never imply Census endorsement or describe a transformed result as an unmodified Census table.
 

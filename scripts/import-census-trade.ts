@@ -71,7 +71,7 @@ export function buildCensusImportUrl(
   url.searchParams.set("I_COMMODITY", entry.htsCode);
   url.searchParams.set("CTY_CODE", "*");
   url.searchParams.set("SUMMARY_LVL", "DET");
-  url.searchParams.set("key", apiKey);
+  url.searchParams.set("key", apiKey.trim());
   return url.toString();
 }
 
@@ -85,11 +85,21 @@ function parseOptionalNumber(value: string) {
 }
 
 export function parseCensusResponse(payload: unknown): CensusImportRow[] {
-  if (!Array.isArray(payload) || !payload.every(Array.isArray)) {
+  if (
+    !Array.isArray(payload) ||
+    !payload.every(
+      (row) =>
+        Array.isArray(row) && row.every((cell) => typeof cell === "string"),
+    )
+  ) {
     throw new Error("Census response must be a table");
   }
   const [rawHeader, ...rawRows] = payload as string[][];
-  if (!rawHeader) throw new Error("Census response is empty");
+  if (!rawHeader || !rawRows.length)
+    throw new Error("Census response has no data rows");
+  if (new Set(rawHeader).size !== rawHeader.length) {
+    throw new Error("Census response has duplicate columns");
+  }
   const column = new Map(rawHeader.map((name, index) => [name, index]));
   const required = [
     "CTY_NAME",
@@ -106,10 +116,24 @@ export function parseCensusResponse(payload: unknown): CensusImportRow[] {
   }
   const value = (row: string[], name: string) => row[column.get(name)!] ?? "";
 
-  return rawRows.flatMap((row) => {
+  const seen = new Set<string>();
+  const rows = rawRows.flatMap((row) => {
+    if (row.length !== rawHeader.length)
+      throw new Error("Census response has an incomplete row");
+    if (!value(row, "SUMMARY_LVL").trim())
+      throw new Error("Census row is missing SUMMARY_LVL");
     if (value(row, "SUMMARY_LVL") !== "DET") return [];
     const customsValueUsd = parseOptionalNumber(value(row, "CON_VAL_MO"));
-    if (customsValueUsd === null) return [];
+    if (customsValueUsd === null)
+      throw new Error("Census detail row is missing customs value");
+    for (const name of ["CTY_NAME", "CTY_CODE", "I_COMMODITY"]) {
+      if (!value(row, name).trim())
+        throw new Error(`Census detail row is missing ${name}`);
+    }
+    const key = `${value(row, "CTY_CODE")}:${value(row, "I_COMMODITY")}`;
+    if (seen.has(key))
+      throw new Error("Census response has duplicate country/commodity rows");
+    seen.add(key);
     return [
       {
         countryName: value(row, "CTY_NAME").trim(),
@@ -121,6 +145,8 @@ export function parseCensusResponse(payload: unknown): CensusImportRow[] {
       },
     ];
   });
+  if (!rows.length) throw new Error("Census response has no detail rows");
+  return rows;
 }
 
 export function buildSupplyMix(
@@ -130,6 +156,7 @@ export function buildSupplyMix(
   countryIndex: ReturnType<typeof buildCountryIndex>,
   sourceId: string,
 ): SupplyMix {
+  assertFullYearCoverage(entry, period);
   const totals = new Map<
     string,
     { countryCode: string; countryName: string; value: number }
@@ -204,6 +231,19 @@ function isActiveForYear(entry: HtsCrosswalkEntry, year: string) {
   );
 }
 
+export function assertFullYearCoverage(entry: HtsCrosswalkEntry, year: string) {
+  monthsForYear(year);
+  if (
+    entry.effectiveFrom > `${year}-01-01` ||
+    (entry.effectiveTo !== null &&
+      entry.effectiveTo < `${Number(year) + 1}-01-01`)
+  ) {
+    throw new Error(
+      `HTS ${entry.htsCode} does not cover the full year ${year}; partial-year imports cannot be labeled complete annual data`,
+    );
+  }
+}
+
 export async function importCensusTrade(
   rootDir: string,
   year: string,
@@ -212,6 +252,7 @@ export async function importCensusTrade(
   if (!apiKey.trim()) {
     throw new Error("CENSUS_API_KEY is required for Census trade imports");
   }
+  const months = monthsForYear(year);
   const dataDir = join(rootDir, "data");
   const crosswalk = HtsCrosswalkSchema.parse(
     JSON.parse(readFileSync(join(dataDir, "hts-crosswalk.json"), "utf8")),
@@ -226,17 +267,29 @@ export async function importCensusTrade(
   );
   if (!entries.length) throw new Error(`No active HTS entries for ${year}`);
 
+  // Reject every partial-year classification before fetching or changing the snapshot.
+  for (const entry of entries) assertFullYearCoverage(entry, year);
+
   const generated: SupplyMix[] = [];
   for (const entry of entries) {
     const rows: CensusImportRow[] = [];
-    for (const month of monthsForYear(year)) {
+    for (const month of months) {
       const response = await fetch(buildCensusImportUrl(entry, month, apiKey));
       if (!response.ok) {
         throw new Error(
           `Census request failed for ${entry.htsCode} in ${month}: HTTP ${response.status}`,
         );
       }
-      rows.push(...parseCensusResponse(await response.json()));
+      let payload: unknown;
+      try {
+        payload = await response.json();
+      } catch {
+        // Census can return HTML for invalid keys. Never echo the keyed URL or body.
+        throw new Error(
+          `Census returned non-JSON data for ${entry.htsCode} in ${month}; verify CENSUS_API_KEY and API availability`,
+        );
+      }
+      rows.push(...parseCensusResponse(payload));
     }
     generated.push(
       buildSupplyMix(

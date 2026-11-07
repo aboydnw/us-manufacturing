@@ -16,7 +16,7 @@ corepack yarn dev
 
 The development server compiles the canonical files in `data/` into `public/data/site-data.json` before Vite starts.
 
-Country-import refreshes require a free Census Data API key supplied through `CENSUS_API_KEY`. The key is used only during ingestion and must never be committed. A production build refreshes the latest completed calendar year when the key is available; set `CENSUS_IMPORT_YEAR=YYYY` to pin another year.
+Country-import refreshes require a free Census Data API key supplied through `CENSUS_API_KEY`. The key is used only during ingestion and must never be committed. Ordinary builds compile the checked-in snapshot and do not call external APIs.
 
 ```bash
 export CENSUS_API_KEY="your-census-api-key"
@@ -50,13 +50,15 @@ See [the data-maintenance guide](docs/data-maintenance.md) before changing evide
 
 ## Deployment
 
-The project is a static Vite site with no server functions or runtime credentials. Cloudflare builds may use an encrypted build secret named `CENSUS_API_KEY` to refresh country imports before compiling the static site.
+The project is a static Vite site with no server functions or runtime credentials. Refresh country imports deliberately, validate the result, and commit the reviewed snapshot before deployment.
 
 - Build command: `corepack yarn build`
 - Output directory: `dist`
 - Framework preset: Vite
 
-The checked-in `wrangler.jsonc` deploys `dist` with Workers Static Assets. Configure `CENSUS_API_KEY` under the Worker's **Settings → Build → Build Variables and Secrets**; do not add it as a plain variable or a runtime Worker binding. The existing build command will detect it automatically.
+The checked-in `wrangler.jsonc` deploys `dist` with Workers Static Assets. The build command does not fetch Census data or use `CENSUS_API_KEY`. Refresh imports explicitly in a trusted local or ingestion environment, review and commit the snapshot, then build. Never expose the key as a runtime Worker binding or commit it.
+
+The importer requires all twelve months and a classification valid for the entire requested year. Partial-year classifications, missing detail values, malformed responses, and failed requests abort without replacing the checked-in snapshot. An empty snapshot remains an honest unknown state until a successful, reviewed refresh. If Census returns a non-JSON response, verify the API key and service availability before retrying; do not substitute estimates.
 
 ## Contributing data
 

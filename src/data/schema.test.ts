@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { sourceFixture } from "../test/fixtures";
-import { ObservationSchema, SiteDataSchema } from "./schema";
+import { ObservationSchema, SiteDataSchema, SupplyMixSchema } from "./schema";
 
 function siteDataFixture() {
   return {
@@ -119,4 +119,63 @@ it("rejects capacity records described as production", () => {
 it("accepts an empty supply-mix collection as an explicit unknown", () => {
   const parsed = SiteDataSchema.parse(siteDataFixture());
   expect(parsed.supplyMixes).toEqual([]);
+});
+
+const supplyMix = {
+  id: "module-imports-2025",
+  stageId: "modules",
+  product: "Modules",
+  geography: "US market" as const,
+  period: "2025",
+  measure: "imports" as const,
+  unit: "USD",
+  denominatorValue: 100,
+  sourceId: sourceFixture.source_id,
+  completeness: "complete" as const,
+  limitation: "Customs value only.",
+  countries: [
+    {
+      countryCode: "CHN",
+      countryName: "China",
+      value: 80,
+      originType: "direct" as const,
+    },
+  ],
+  unknownOriginValue: 20,
+};
+
+it("requires complete supply mixes to reconcile known and unknown origin values", () => {
+  expect(() =>
+    SupplyMixSchema.parse({ ...supplyMix, unknownOriginValue: 30 }),
+  ).toThrow(/reconcile/i);
+  expect(() =>
+    SupplyMixSchema.parse({
+      ...supplyMix,
+      countries: [{ ...supplyMix.countries[0], value: 20 }],
+      unknownOriginValue: 0,
+    }),
+  ).toThrow(/reconcile/i);
+});
+
+it("rejects duplicate country codes in a supply mix", () => {
+  expect(() =>
+    SupplyMixSchema.parse({
+      ...supplyMix,
+      countries: [
+        ...supplyMix.countries,
+        { ...supplyMix.countries[0], value: 0 },
+      ],
+    }),
+  ).toThrow(/unique/i);
+});
+
+it("allows partial supply mixes to document incomplete coverage", () => {
+  expect(
+    SupplyMixSchema.parse({
+      ...supplyMix,
+      completeness: "partial",
+      countries: [{ ...supplyMix.countries[0], value: 20 }],
+      unknownOriginValue: null,
+    }).completeness,
+  ).toBe("partial");
 });
